@@ -27,6 +27,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<script>try{const r=document.documentElement,t=JSON.parse(localStorage.getItem('theme')||'"system"'),s=JSON.parse(localStorage.getItem('textSize')||'1');if(t!=='system')r.dataset.theme=t;r.style.fontSize=[90,100,115,130][s]+'%'}catch{}</script>
 <style>
 /* Layout: phone-first app shell. Fixed top bar, one scrolling view per tab, fixed bottom tab bar.
    All text comes from content.js in the chosen language. */
@@ -41,12 +42,18 @@
   --tabbar:64px; --topbar:56px;
   color-scheme:light;
 }
-@media (prefers-color-scheme: dark){:root{
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#121a15; --surface:#1a241e; --ink:#e2eae3; --muted:#9aab9e; --line:#2e3c34;
   --bar:#16211a; --bar-ink:#e2eae3;
   --mono:#72c693; --mono-soft:#1f3628; --di:#d98fc8; --di-soft:#372331;
   --warn:#e2b14e; --warn-soft:#3a2f17;
   --soil:#4a3e2e; --soil-mid:#5e4b33; --soil-dark:#77603f; --water:#6fa8dc; --sun:#e6b84a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121a15; --surface:#1a241e; --ink:#e2eae3; --muted:#9aab9e; --line:#2e3c34;
+  --bar:#16211a; --bar-ink:#e2eae3;
+  --mono:#72c693; --mono-soft:#1f3628; --di:#d98fc8; --di-soft:#372331;
+  --warn:#e2b14e; --warn-soft:#3a2f17;
+  --soil:#4a3e2e; --soil-mid:#5e4b33; --soil-dark:#77603f; --water:#6fa8dc; --sun:#e6b84a; color-scheme:dark}
 /* Chinese text: system CJK faces (the Latin web fonts have no Chinese glyphs) */
 :lang(zh){--f-display:"Noto Serif SC","Source Han Serif SC","Songti SC","SimSun",serif;
   --f-body:system-ui,-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif}
@@ -54,7 +61,7 @@
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{margin:0;height:100%}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16.5px;line-height:1.55;
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:1.03rem;line-height:1.55;
   -webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
 h1,h2,h3{font-family:var(--f-display);font-weight:400;margin:0;line-height:1.2;text-wrap:balance}
 p{margin:0}
@@ -240,6 +247,20 @@ details.sec > summary .hero .fig svg{background:var(--bg)}
 .linkbtn{border:0;background:transparent;color:var(--mono);text-decoration:underline;cursor:pointer;padding:6px 0}
 .primary{border:0;background:var(--bar);color:var(--bar-ink);border-radius:12px;padding:14px 18px;font-weight:700;cursor:pointer;font-size:1rem}
 
+/* Settings sheet */
+.set-row{display:grid;grid-template-columns:28px minmax(0,1fr) auto 14px;gap:10px;align-items:center;width:100%;text-align:left;cursor:pointer;
+  border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px 14px;font-size:1rem}
+.set-row .set-v{color:var(--muted);font-size:.9rem}
+.set-row .chev{color:var(--muted)}
+.set-ic svg{width:22px;height:22px;fill:none;stroke:var(--mono);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;display:block}
+.set-block{display:flex;flex-direction:column;gap:8px;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px 14px}
+.set-block .set-l{font-weight:700}
+.set-row .set-l{font-weight:700}
+.seg.three{grid-template-columns:repeat(3,1fr)} .seg.four{grid-template-columns:repeat(4,1fr)}
+.seg.four button{line-height:1;padding:8px 4px}
+.seg.four button span{display:block}
+.backbtn{align-self:flex-start;border:0;background:transparent;color:var(--mono);font-weight:700;cursor:pointer;padding:4px 0;font-size:1rem}
+
 /* Share sheet */
 .iconbtn{border:1px solid color-mix(in srgb,var(--bar-ink) 40%,transparent);background:transparent;color:var(--bar-ink);border-radius:999px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;flex:none}
 .iconbtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8}
@@ -262,7 +283,11 @@ details.sec > summary .hero .fig svg{background:var(--bg)}
 .primary.wa{background:#1fa855;color:#fff;display:flex;gap:8px;align-items:center;justify-content:center;text-decoration:none}
 .primary.wa svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:1.6}
 .ghost{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px;font-weight:700;cursor:pointer}
-@media (prefers-color-scheme: dark){.wa-chat{background:#0b141a}.wa-bubble{background:#005c4b;color:#e9edef}.wa-card-t span{color:#aebac1}.wa-text a{color:#53bdeb}}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .wa-chat{background:#0b141a}:root:not([data-theme="light"]) .wa-bubble{background:#005c4b;color:#e9edef}:root:not([data-theme="light"]) .wa-card-t span{color:#aebac1}:root:not([data-theme="light"]) .wa-text a{color:#53bdeb}}
+:root[data-theme="dark"] .wa-chat{background:#0b141a}
+:root[data-theme="dark"] .wa-bubble{background:#005c4b;color:#e9edef}
+:root[data-theme="dark"] .wa-card-t span{color:#aebac1}
+:root[data-theme="dark"] .wa-text a{color:#53bdeb}
 
 /* Onboarding */
 .onboard{position:fixed;inset:0;z-index:50;background:var(--bg);overflow:auto;
@@ -290,8 +315,7 @@ details.sec > summary .hero .fig svg{background:var(--bg)}
     <h1 id="appName"></h1>
     <span class="offline" id="offline" hidden></span>
     <button class="install" id="installBtn" type="button"></button>
-    <button class="iconbtn" id="shareBtn" type="button" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="M8.3 10.8l7.4-4.4M8.3 13.2l7.4 4.4"/></svg></button>
-    <button class="langbtn" id="langBtn" type="button" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg><span id="langCode"></span></button>
+    <button class="iconbtn" id="setBtn" type="button" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v2.6M12 18.9v2.6M4.6 4.6l1.9 1.9M17.5 17.5l1.9 1.9M2.5 12h2.6M18.9 12h2.6M4.6 19.4l1.9-1.9M17.5 6.5l1.9-1.9"/><circle cx="12" cy="12" r="6.6"/></svg></button>
   </div>
 </header>
 
@@ -348,11 +372,23 @@ details.sec > summary .hero .fig svg{background:var(--bg)}
   </div>
 </nav>
 
-<div class="scrim" id="langSheet" hidden>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="langTitle">
-    <h2 id="langTitle" data-t="langMenu.title"></h2>
-    <div class="langs" id="langList"></div>
-    <button class="primary" type="button" id="langDone" data-t="langMenu.done"></button>
+<div class="scrim" id="setSheet" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="setTitle">
+    <div id="setMain" class="stack" style="gap:10px">
+      <h2 id="setTitle" data-t="settings.title" tabindex="-1"></h2>
+      <button class="set-row" id="rowLang" type="button"><span class="set-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg></span><span class="set-l" data-t="settings.language"></span><span class="set-v" id="curLang"></span><span class="chev" aria-hidden="true">›</span></button>
+      <div class="set-block"><span class="set-l" id="sizeLabel" data-t="settings.textSize"></span>
+        <div class="seg four" role="group" aria-labelledby="sizeLabel" id="sizeSeg"><button type="button" data-size="0"><span style="font-size:0.8rem">A</span></button><button type="button" data-size="1"><span style="font-size:0.95rem">A</span></button><button type="button" data-size="2"><span style="font-size:1.15rem">A</span></button><button type="button" data-size="3"><span style="font-size:1.35rem">A</span></button></div></div>
+      <div class="set-block"><span class="set-l" id="themeLabel" data-t="settings.theme"></span>
+        <div class="seg three" role="group" aria-labelledby="themeLabel" id="themeSeg"><button type="button" data-theme-opt="system" data-t="settings.themes.system"></button><button type="button" data-theme-opt="light" data-t="settings.themes.light"></button><button type="button" data-theme-opt="dark" data-t="settings.themes.dark"></button></div></div>
+      <button class="set-row" id="rowShare" type="button"><span class="set-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="M8.3 10.8l7.4-4.4M8.3 13.2l7.4 4.4"/></svg></span><span class="set-l" data-t="settings.share"></span><span></span><span class="chev" aria-hidden="true">›</span></button>
+      <button class="primary" type="button" id="setDone" data-t="langMenu.done"></button>
+    </div>
+    <div id="setLang" class="stack" style="gap:10px" hidden>
+      <button class="backbtn" type="button" id="langBack">‹ <span data-t="settings.back"></span></button>
+      <h2 id="langTitle" data-t="settings.language" tabindex="-1"></h2>
+      <div class="langs" id="langList"></div>
+    </div>
   </div>
 </div>
 
@@ -398,6 +434,8 @@ const $=s=>document.querySelector(s);
 const store={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch{return d}},
              set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
 const LANGS=['zh','en','ms'];
+const SIZES=[90,100,115,130];
+const THEME_BAR={light:'#24432f',dark:'#16211a'};
 const get=(obj,path)=>path.split('.').reduce((o,k)=>o&&o[k],obj);
 function guessLang(){const n=(navigator.language||'en').toLowerCase();return n.startsWith('zh')?'zh':(n.startsWith('ms')||n.startsWith('id'))?'ms':'en'}
 let lang=store.get('lang',null);
@@ -409,8 +447,10 @@ function render(){
   document.documentElement.lang=L.htmlLang;
   document.title=L.appName;
   $('#appName').textContent=L.appName;
-  $('#langCode').textContent=L.code;
-  $('#langBtn').setAttribute('aria-label',L.langMenu.title);
+  $('#setBtn').setAttribute('aria-label',L.settings.open);
+  $('#curLang').textContent=L.native;
+  document.querySelectorAll('#sizeSeg [data-size]').forEach(b=>b.setAttribute('aria-label',L.settings.sizes[b.dataset.size]));
+  syncPrefs();
   $('#offline').textContent=L.offline;
   $('#installBtn').textContent=L.install;
   $('#onboard').setAttribute('aria-label',L.appName);
@@ -441,7 +481,6 @@ function render(){
   $('#vClose').setAttribute('aria-label',L.viewer.close);
   $('#vHint').textContent=L.viewer.hint;
   $('#photoCredits').innerHTML=Object.entries(PHOTOS).map(([k,p])=>`<li>${L.photo[k]}: <a href="${p.page}" target="_blank" rel="noopener">${p.author}</a>, ${p.license}</li>`).join('');
-  $('#shareBtn').setAttribute('aria-label',L.share.button);
   $('#qrImg').alt=L.share.scan;
   $('#qrUrl').textContent=APP_URL;
   $('#waDomain').textContent=new URL(APP_URL).host;
@@ -498,10 +537,10 @@ addEventListener('hashchange',route);
 // ---------- durian season ----------
 function setSeason(s){
   store.set('season',s);
-  document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.season===s));
+  document.querySelectorAll('#durian .seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.season===s));
   $('#season-normal').hidden=s!=='normal'; $('#season-induction').hidden=s!=='induction';
 }
-document.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>setSeason(b.dataset.season)));
+document.querySelectorAll('#durian .seg button').forEach(b=>b.addEventListener('click',()=>setSeason(b.dataset.season)));
 document.querySelectorAll('.reset').forEach(b=>b.addEventListener('click',()=>{
   const t=store.get('ticks',{});
   document.querySelectorAll(`[data-list="${b.dataset.reset}"] input`).forEach(i=>{i.checked=false;t[i.id]=false});
@@ -509,13 +548,33 @@ document.querySelectorAll('.reset').forEach(b=>b.addEventListener('click',()=>{
 }));
 
 // ---------- language sheet ----------
-function openSheet(){$('#langSheet').hidden=false;$('#langList [aria-pressed="true"]')?.focus()}
-function closeSheet(){$('#langSheet').hidden=true;$('#langBtn').focus()}
-$('#langBtn').addEventListener('click',openSheet);
-$('#langDone').addEventListener('click',closeSheet);
-$('#langSheet').addEventListener('click',e=>{if(e.target.id==='langSheet')closeSheet()});
-$('#langList').addEventListener('click',e=>{const b=e.target.closest('[data-lang]');if(b){setLang(b.dataset.lang);$(`#langList [data-lang="${b.dataset.lang}"]`).focus()}});
-addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#langSheet').hidden)closeSheet()});
+function syncPrefs(){
+  const size=store.get('textSize',1), theme=store.get('theme','system'), r=document.documentElement;
+  r.style.fontSize=SIZES[size]+'%';
+  if(theme==='system') delete r.dataset.theme; else r.dataset.theme=theme;
+  document.querySelectorAll('meta[name="theme-color"]').forEach(m=>{
+    if(!m.dataset.orig) m.dataset.orig=m.content;
+    m.content=theme==='system'?m.dataset.orig:THEME_BAR[theme];
+  });
+  document.querySelectorAll('#sizeSeg [data-size]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.size===size));
+  document.querySelectorAll('#themeSeg [data-theme-opt]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.themeOpt===theme));
+}
+$('#sizeSeg').addEventListener('click',e=>{const b=e.target.closest('[data-size]');if(b){store.set('textSize',+b.dataset.size);syncPrefs()}});
+$('#themeSeg').addEventListener('click',e=>{const b=e.target.closest('[data-theme-opt]');if(b){store.set('theme',b.dataset.themeOpt);syncPrefs()}});
+
+function showPane(p){$('#setMain').hidden=p!=='main';$('#setLang').hidden=p!=='lang';
+  if(p==='lang')($('#langList [aria-pressed="true"]')||$('#langTitle')).focus();else $('#setTitle').focus({preventScroll:true})}
+function openSettings(){$('#setSheet').hidden=false;history.pushState({sheet:'settings'},'');showPane('main')}
+function closeSettings(fromBack){if($('#setSheet').hidden)return;$('#setSheet').hidden=true;if(!fromBack&&history.state&&history.state.sheet==='settings')history.back();$('#setBtn').focus()}
+$('#setBtn').addEventListener('click',openSettings);
+$('#setDone').addEventListener('click',()=>closeSettings());
+$('#setSheet').addEventListener('click',e=>{if(e.target.id==='setSheet')closeSettings()});
+$('#rowLang').addEventListener('click',()=>showPane('lang'));
+$('#langBack').addEventListener('click',()=>showPane('main'));
+$('#langList').addEventListener('click',e=>{const b=e.target.closest('[data-lang]');if(b){setLang(b.dataset.lang);showPane('main')}});
+$('#rowShare').addEventListener('click',()=>{$('#setSheet').hidden=true;openShare(true)});
+addEventListener('popstate',()=>closeSettings(true));
+addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#setSheet').hidden){if(!$('#setLang').hidden)showPane('main');else closeSettings()}});
 
 // ---------- first run: one tap to pick a language, then straight to the content ----------
 function startOnboarding(){
@@ -548,9 +607,8 @@ async function copy(text,ok){
 $('#copyLinkBtn').addEventListener('click',()=>copy(APP_URL,T[lang].share.copied));
 $('#copyMsgBtn').addEventListener('click',()=>copy($('#shareMsg').value,T[lang].share.copiedMsg));
 if(navigator.share){$('#moreBtn').hidden=false;$('#moreBtn').addEventListener('click',()=>navigator.share({title:T[lang].appName,text:$('#shareMsg').value}).catch(()=>{}))}
-function openShare(){$('#shareSheet').hidden=false;history.pushState({sheet:1},'');const sh=$('#shareSheet .sheet');sh.scrollTop=0;$('#shareTitle').focus({preventScroll:true})}
-function closeShare(fromBack){if($('#shareSheet').hidden)return;$('#shareSheet').hidden=true;if(!fromBack&&history.state&&history.state.sheet)history.back();$('#shareBtn').focus()}
-$('#shareBtn').addEventListener('click',openShare);
+function openShare(fromSettings){$('#shareSheet').hidden=false;if(fromSettings&&history.state&&history.state.sheet==='settings')history.replaceState({sheet:1},'');else history.pushState({sheet:1},'');const sh=$('#shareSheet .sheet');sh.scrollTop=0;$('#shareTitle').focus({preventScroll:true})}
+function closeShare(fromBack){if($('#shareSheet').hidden)return;$('#shareSheet').hidden=true;if(!fromBack&&history.state&&history.state.sheet)history.back();$('#setBtn').focus()}
 $('#shareDone').addEventListener('click',()=>closeShare());
 $('#shareSheet').addEventListener('click',e=>{if(e.target.id==='shareSheet')closeShare()});
 addEventListener('popstate',()=>closeShare(true));
