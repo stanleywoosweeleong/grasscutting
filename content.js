@@ -519,7 +519,7 @@ zh: {
 
 /* ───────────────────────── Bahasa Melayu ───────────────────────── */
 ms: {
-  htmlLang: 'ms', code: 'BM', native: 'Bahasa Melayu',
+  htmlLang: 'ms', code: 'BM', native: 'Malay',
   appName: 'Potong Rumput',
   tabs: { learn: 'Belajar', durian: 'Durian', sources: 'Sumber' },
   install: 'Pasang', installed: 'Dipasang', offline: 'Luar talian',
