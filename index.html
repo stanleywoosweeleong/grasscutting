@@ -358,7 +358,7 @@ details.sec > summary .hero .fig svg{background:var(--bg)}
 
 <div class="scrim" id="shareSheet" hidden>
   <div class="sheet share" role="dialog" aria-modal="true" aria-labelledby="shareTitle">
-    <h2 id="shareTitle" data-t="share.title"></h2>
+    <h2 id="shareTitle" data-t="share.title" tabindex="-1"></h2>
     <div class="qrbox"><img id="qrImg" src="qr.svg" alt="" width="180" height="180" onerror="this.parentNode.hidden=true"><p class="cite" data-t="share.scan"></p><p class="cite qr-url" id="qrUrl"></p></div>
     <p class="eyebrow" data-t="share.previewNote"></p>
     <div class="wa-chat" aria-hidden="true">
@@ -548,7 +548,7 @@ async function copy(text,ok){
 $('#copyLinkBtn').addEventListener('click',()=>copy(APP_URL,T[lang].share.copied));
 $('#copyMsgBtn').addEventListener('click',()=>copy($('#shareMsg').value,T[lang].share.copiedMsg));
 if(navigator.share){$('#moreBtn').hidden=false;$('#moreBtn').addEventListener('click',()=>navigator.share({title:T[lang].appName,text:$('#shareMsg').value}).catch(()=>{}))}
-function openShare(){$('#shareSheet').hidden=false;history.pushState({sheet:1},'');$('#waBtn').focus()}
+function openShare(){$('#shareSheet').hidden=false;history.pushState({sheet:1},'');const sh=$('#shareSheet .sheet');sh.scrollTop=0;$('#shareTitle').focus({preventScroll:true})}
 function closeShare(fromBack){if($('#shareSheet').hidden)return;$('#shareSheet').hidden=true;if(!fromBack&&history.state&&history.state.sheet)history.back();$('#shareBtn').focus()}
 $('#shareBtn').addEventListener('click',openShare);
 $('#shareDone').addEventListener('click',()=>closeShare());

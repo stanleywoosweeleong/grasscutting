@@ -16,6 +16,7 @@ const SHELL = [
   './photos/pintoi.jpg',
   './manifest.webmanifest',
   './og-image.png',
+  './qr.svg',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/maskable-512.png',
