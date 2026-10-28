@@ -115,7 +115,7 @@ const FIGS = {
   `, `${L.open}. ${L.shade}.`),
 
   // 5 · four ways roots build soil, as a soil cross-section
-  f5: L => svg(210, `
+  f5: L => svg(218, `
     <rect x="0" y="34" width="340" height="146" class="soil"/>
     ${blades(Array.from({ length: 28 }, (_, i) => { const x = 6 + i * 12; return `M${x} 34 Q${x + 2} 26 ${x + 4} ${18 + (i % 3) * 3}`; }), 'leaf', 2.6)}
     <path d="M52 34 Q56 90 50 160" class="deadroot" fill="none" stroke-width="3" stroke-dasharray="6 4"/>
@@ -127,17 +127,17 @@ const FIGS = {
     <path d="M300 34 Q304 110 298 176" class="root" fill="none" stroke-width="2.6"/>
     <g class="root" fill="none" stroke-width="1.2"><path d="M301 70 l-12 8"/><path d="M302 104 l12 8"/><path d="M300 140 l-12 8"/></g>
     <g class="uparrow" fill="none" stroke-width="1.6"><path d="M318 160 V108 m-5 6 l5 -6 5 6"/></g>
-    ${[[55, L.om], [136, L.pores], [220, L.glue], [300, L.life]].map(([x, s], i) => `<circle cx="${x}" cy="${i === 1 ? 52 : 52}" r="9" class="badge"/><text x="${x}" y="56" class="badge-t" text-anchor="middle">${i + 1}</text>${txt(i === 3 ? 336 : x, 198, s, 'lb', i === 3 ? 'end' : 'middle')}`).join('')}
+    ${[[55, L.om], [136, L.pores], [220, L.glue], [300, L.life]].map(([x, s], i) => `<circle cx="${x}" cy="${i === 1 ? 52 : 52}" r="9" class="badge"/><text x="${x}" y="56" class="badge-t" text-anchor="middle">${i + 1}</text>${txt(i === 3 ? 304 : x, 198, s, 'lb', 'middle')}`).join('')}
   `, [L.om, L.pores, L.glue, L.life].map((s, i) => `${i + 1} ${s}`).join(', ')),
 
   // 6 · living roots over time: cutting keeps them, spraying kills them once (illustrative)
-  f6: L => svg(176, `
+  f6: L => svg(180, `
     <line x1="40" y1="20" x2="40" y2="134" class="axis"/><line x1="40" y1="134" x2="326" y2="134" class="axis"/>
-    ${txt(44, 16, L.roots, 'lb strong')}${txt(326, 152, L.time, 'lb', 'end')}
+    ${txt(44, 16, L.roots, 'lb strong')}${txt(326, 150, L.time, 'lb', 'end')}
     <polyline points="40,40 80,40 84,54 112,42 148,42 152,56 180,44 216,44 220,58 248,46 284,46 288,60 316,48 326,48" class="line-a" fill="none" stroke-width="3" stroke-linejoin="round"/>
     <polyline points="40,40 92,40 104,128 210,128 250,112 290,96 326,88" class="line-b" fill="none" stroke-width="3" stroke-linejoin="round" stroke-dasharray="7 5"/>
-    ${[84, 152, 220, 288].map(x => `<path d="M${x} 136 v6" class="axis"/>${txt(x, 166, L.cut, 'lb small', 'middle')}`).join('')}
-    <path d="M98 30 v8" class="axis"/>${txt(98, 28, L.spray, 'lb small', 'middle')}
+    ${[84, 152, 220, 288].map(x => `<path d="M${x} 136 v6" class="axis"/>${txt(x, 170, L.cut, 'lb small', 'middle')}`).join('')}
+    <path d="M98 30 v8" class="axis"/>${txt(104, 34, L.spray, 'lb small')}
     <g transform="translate(168 70)"><rect width="14" height="4" y="-4" class="sw-a"/>${txt(20, 0, L.cutting, 'lb small')}<rect width="14" height="4" y="12" class="sw-b"/>${txt(20, 16, L.herbicide, 'lb small')}</g>
   `, `${L.cutting} / ${L.herbicide}`),
 
@@ -155,11 +155,11 @@ const FIGS = {
     <rect x="0" y="170" width="340" height="26" class="soil"/>
     <line x1="44" y1="20" x2="44" y2="170" class="axis"/>
     ${[0, 5, 10, 15].map(cm => { const y = 170 - cm * 10; return `<line x1="38" y1="${y}" x2="50" y2="${y}" class="axis"/>${txt(32, y + 4, cm, 'lb small', 'end')}`; }).join('')}
-    ${txt(32, 12, L.cm, 'lb small', 'end')}
+    ${txt(50, 16, L.cm, 'lb small')}
     ${blades(Array.from({ length: 12 }, (_, i) => { const x = 74 + i * 9; return `M${x} 170 Q${x + 1} 100 ${x - 3 + (i % 3) * 3} ${20 + (i % 3) * 4}`; }), 'leaf', 3)}
     <line x1="60" y1="70" x2="200" y2="70" class="cutline" stroke-width="2" stroke-dasharray="6 4"/>
-    <path d="M204 22 h6 v46 h-6" class="bracket" fill="none"/>${txt(216, 44, L.remove, 'lb strong')}${txt(216, 58, '(5 ' + L.cm + ')', 'lb small')}
-    <path d="M204 72 h6 v96 h-6" class="bracket" fill="none"/>${txt(216, 116, L.leave, 'lb strong')}${txt(216, 130, '(10 ' + L.cm + ')', 'lb small')}
+    <path d="M204 22 h6 v46 h-6" class="bracket" fill="none"/>${txt(216, 42, L.remove, 'lb strong')}${txt(216, 60, '(5 ' + L.cm + ')', 'lb small')}
+    <path d="M204 72 h6 v96 h-6" class="bracket" fill="none"/>${txt(216, 114, L.leave, 'lb strong')}${txt(216, 132, '(10 ' + L.cm + ')', 'lb small')}
     ${txt(216, 82, L.cut, 'lb cut')}
   `, `${L.remove}, ${L.leave}`),
 
