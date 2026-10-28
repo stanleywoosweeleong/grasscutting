@@ -219,7 +219,7 @@ main{padding-top:calc(var(--topbar) + env(safe-area-inset-top,0px));
 /* Durian */
 .seg{display:grid;grid-template-columns:1fr 1fr;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px}
 .seg button{border:0;border-radius:9px;padding:10px 8px;background:transparent;cursor:pointer;font-weight:700;color:var(--muted)}
-.seg button[aria-pressed="true"]{background:var(--bar);color:var(--bar-ink)}
+.seg button[aria-pressed="true"]{background:var(--mono-soft);color:var(--mono);box-shadow:inset 0 0 0 1.5px var(--mono)}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px}
 .checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
 .checks label{display:grid;grid-template-columns:1.5rem minmax(0,1fr);gap:10px;align-items:start;padding:8px 0;cursor:pointer}
@@ -253,7 +253,10 @@ main{padding-top:calc(var(--topbar) + env(safe-area-inset-top,0px));
 .sheet{background:var(--surface);width:100%;max-width:520px;border-radius:16px 16px 0 0;
   padding-top:20px;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
-  display:flex;flex-direction:column;gap:12px}
+  display:flex;flex-direction:column;gap:12px;max-height:92vh;max-height:92dvh;overflow:auto;overscroll-behavior:contain}
+/* While a sheet, the photo viewer or the language picker is open, the page behind stays still */
+html:has(.scrim:not([hidden])),html:has(.viewer:not([hidden])),html:has(.onboard:not([hidden])){overflow:hidden}
+.scrim,.viewer,.onboard{overscroll-behavior:contain}
 .sheet h2{font-size:1.3rem}
 .langs{display:flex;flex-direction:column;gap:8px}
 .langs button{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;cursor:pointer;
@@ -535,6 +538,9 @@ function block([type,v]){
   return '';
 }
 function setLang(l){lang=l;store.set('lang',l);render()}
+
+// Older iOS ignores overflow:hidden on the page: dragging the dimmed backdrop must not scroll it
+document.querySelectorAll('.scrim').forEach(sc=>sc.addEventListener('touchmove',e=>{if(!e.target.closest('.sheet'))e.preventDefault()},{passive:false}));
 
 // ---------- open and close sections ----------
 function setSection(d,open){
