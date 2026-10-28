@@ -275,6 +275,7 @@ html:has(.scrim:not([hidden])),html:has(.viewer:not([hidden])),html:has(.onboard
 .set-ic svg{width:22px;height:22px;fill:none;stroke:var(--mono);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;display:block}
 .set-block{display:flex;flex-direction:column;gap:8px;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px 14px}
 .set-block .set-l{font-weight:700}
+.set-ver{margin:6px 0 0;text-align:center;color:var(--muted);font-size:.85rem}
 .set-row .set-l{font-weight:700}
 .seg.three{grid-template-columns:repeat(3,1fr)} .seg.four{grid-template-columns:repeat(4,1fr)}
 .seg.four button{line-height:1;padding:8px 4px}
@@ -406,6 +407,7 @@ html:has(.scrim:not([hidden])),html:has(.viewer:not([hidden])),html:has(.onboard
       <div class="set-block"><span class="set-l" id="themeLabel" data-t="settings.theme"></span>
         <div class="seg three" role="group" aria-labelledby="themeLabel" id="themeSeg"><button type="button" data-theme-opt="system" data-t="settings.themes.system"></button><button type="button" data-theme-opt="light" data-t="settings.themes.light"></button><button type="button" data-theme-opt="dark" data-t="settings.themes.dark"></button></div></div>
       <button class="set-row" id="rowShare" type="button"><span class="set-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="M8.3 10.8l7.4-4.4M8.3 13.2l7.4 4.4"/></svg></span><span class="set-l" data-t="settings.share"></span><span></span><span class="chev" aria-hidden="true">›</span></button>
+      <p class="set-ver" id="setVer"></p>
     </div>
   </div>
 </div>
@@ -449,6 +451,8 @@ const store={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON
              set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
 const LANGS=['zh','en','ms'];
 const SIZES=[90,100,115,130];
+// Bump with every release: settings shows it, and returning users get an "updated" toast
+const APP_VERSION='1.1.0';
 const THEME_BAR={light:'#f2eee5',dark:'#121a15'};
 const get=(obj,path)=>path.split('.').reduce((o,k)=>o&&o[k],obj);
 function guessLang(){const n=(navigator.language||'en').toLowerCase();return n.startsWith('zh')?'zh':(n.startsWith('ms')||n.startsWith('id'))?'ms':'en'}
@@ -462,6 +466,7 @@ function render(){
   document.title=L.appName;
   $('#appName').textContent=L.appName;
   $('#setBtn').setAttribute('aria-label',L.settings.open);
+  $('#setVer').textContent=L.settings.version+' '+APP_VERSION;
   $('#setClose').setAttribute('aria-label',L.viewer.close);$('#tipClose').setAttribute('aria-label',L.viewer.close);$('#shareClose').setAttribute('aria-label',L.viewer.close);
   document.querySelectorAll('#sizeSeg [data-size]').forEach(b=>b.setAttribute('aria-label',L.settings.sizes[b.dataset.size]));
   syncPrefs();
@@ -687,7 +692,7 @@ $('#vStage').addEventListener('click',e=>{
 addEventListener('popstate',()=>closeViewer(true));
 
 // ---------- toast, offline, install ----------
-let tt;function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2200)}
+let tt;function toast(m,ms=2200){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,ms)}
 function net(){$('#offline').hidden=navigator.onLine}
 addEventListener('online',net);addEventListener('offline',net);
 let deferred=null;
@@ -706,6 +711,17 @@ render(); setSeason(store.get('season','normal')); net(); route();
 // Cards open as they were left; on the very first launch, card 1 is open
 store.get('openSecs',store.get('seenLearn',false)?[]:['s1']).forEach(id=>{const d=document.getElementById(id); if(d) setSection(d,true)});
 if(!store.get('onboarded',false)) startOnboarding();
+// Updated since the last visit: say so once (new users just get the current version recorded)
+if(store.get('onboarded',false)&&store.get('version',null)!==APP_VERSION) toast(T[lang].updated.replace('{v}',APP_VERSION),3500);
+store.set('version',APP_VERSION);
+// An installed app can sit open for days: on returning to it, reload if a newer version is online
+addEventListener('visibilitychange',()=>{
+  if(document.hidden||!navigator.onLine) return;
+  fetch('index.html',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(h=>{
+    const v=(h.match(/const APP_VERSION='([^']+)'/)||[])[1];
+    if(v&&v!==APP_VERSION) location.reload();
+  }).catch(()=>{});
+});
 
 // Service worker (network-first, so content updates need no version bump)
 if('serviceWorker' in navigator){
