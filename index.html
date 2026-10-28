@@ -67,19 +67,14 @@ main{padding-top:calc(var(--topbar) + env(safe-area-inset-top,0px));
 .lede{color:var(--muted);font-size:1.02rem}
 .view > h2{font-size:1.6rem}
 
-/* Key point cards */
-.points{display:flex;flex-direction:column;gap:10px;list-style:none;margin:0;padding:0}
-.point{display:grid;grid-template-columns:2.2rem minmax(0,1fr) auto;gap:12px;align-items:start;width:100%;text-align:left;
-  background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;cursor:pointer}
-.point:active{transform:scale(.99)}
-.point .n{font-family:var(--f-display);font-size:1.2rem;color:var(--mono);line-height:1.3}
-.point strong{display:block;font-weight:700;line-height:1.35;margin-bottom:4px}
-.point span.t{color:var(--muted);font-size:.94rem}
-.point .go{color:var(--muted);font-size:1.2rem;line-height:1.3}
 
 /* Learn accordion */
 details.sec{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-details.sec > summary{list-style:none;cursor:pointer;padding:16px;display:grid;grid-template-columns:2rem minmax(0,1fr) 1rem;gap:10px;align-items:center}
+details.sec > summary{list-style:none;cursor:pointer;padding:16px;display:grid;grid-template-columns:2rem minmax(0,1fr) 1rem;gap:10px;align-items:start}
+details.sec > summary .head{display:flex;flex-direction:column;gap:4px;min-width:0}
+details.sec > summary .take{color:var(--muted);font-size:.93rem}
+details.sec[open] > summary .take{color:var(--ink)}
+details.sec > summary .n,details.sec > summary .chev{line-height:1.5}
 details.sec > summary::-webkit-details-marker{display:none}
 details.sec > summary h3{font-size:1.1rem}
 details.sec > summary .n{font-family:var(--f-display);color:var(--mono)}
@@ -123,7 +118,7 @@ details.sec[open] > summary .chev{transform:rotate(90deg)}
 .tabs{position:fixed;inset:auto 0 0;z-index:20;background:var(--surface);border-top:1px solid var(--line);
   padding-bottom:env(safe-area-inset-bottom,0px);
   padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px))}
-.tabs-in{height:var(--tabbar);display:grid;grid-template-columns:repeat(4,1fr);max-width:720px;margin:0 auto}
+.tabs-in{height:var(--tabbar);display:grid;grid-template-columns:repeat(3,1fr);max-width:720px;margin:0 auto}
 .tabs a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-decoration:none;color:var(--muted);font-size:.74rem;font-weight:700}
 .tabs svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .tabs a[aria-current="page"]{color:var(--mono)}
@@ -144,21 +139,14 @@ details.sec[open] > summary .chev{transform:rotate(90deg)}
 </header>
 
 <main>
-<!-- POINTS -->
-<section class="view" id="points" aria-labelledby="h-points">
-  <span class="eyebrow">For durian growers</span>
-  <h2 id="h-points">Build soil by cutting, not spraying</h2>
-  <p class="lede">Published research backs each point below. Tap one for the evidence and what to do with it.</p>
-  <ol class="points" id="pointList"></ol>
-</section>
-
 <!-- LEARN -->
-<section class="view" id="learn" aria-labelledby="h-learn" hidden>
-  <span class="eyebrow">The science</span>
-  <h2 id="h-learn">How grass and soil shape each other</h2>
+<section class="view" id="learn" aria-labelledby="h-learn">
+  <span class="eyebrow">For durian growers</span>
+  <h2 id="h-learn">Build soil by cutting, not spraying</h2>
+  <p class="lede">How grass and soil shape each other, with the research behind each point. Tap a section to read it.</p>
 
   <details class="sec" id="s1">
-    <summary><span class="n">1</span><h3>Monocot grasses vs dicot ground covers</h3><span class="chev">›</span></summary>
+    <summary><span class="n">1</span><span class="head"><h3>Monocot grasses vs dicot ground covers</h3><span class="take">Fibrous roots, a protected growing point and efficient C4 photosynthesis let grasses get by on poorer soil.</span></span><span class="chev">›</span></summary>
     <div class="body">
       <p>Monocots carry one cotyledon (seed leaf) in the seed and dicots carry two (单子叶 / 双子叶). Every true grass (family Poaceae) is a monocot. The dicots used as ground covers are broadleaf plants such as white clover 白车轴草, dichondra 马蹄金 and perennial peanut 蔓花生.</p>
       <div class="compare">
@@ -173,7 +161,7 @@ details.sec[open] > summary .chev{transform:rotate(90deg)}
   </details>
 
   <details class="sec" id="s2">
-    <summary><span class="n">2</span><h3>What grows is the soil's report card</h3><span class="chev">›</span></summary>
+    <summary><span class="n">2</span><span class="head"><h3>What grows is the soil's report card</h3><span class="take">What grows reflects the soil, and the plants slowly change it.</span></span><span class="chev">›</span></summary>
     <div class="body">
       <p>What grows naturally reflects the soil's water, nutrients, structure and disturbance history. Ecologists call these <b>indicator plants</b>. Fields dominated by 茅草 in West Africa, for example, had degraded, low-fertility soils.</p>
       <p>The report card also feeds back. Plants change their soil through dead roots, root exudates, the microbes they host and the nutrients they pull up. The changed soil then favours different plants. This <b>plant–soil feedback</b> drives succession.</p>
@@ -183,7 +171,7 @@ details.sec[open] > summary .chev{transform:rotate(90deg)}
   </details>
 
   <details class="sec" id="s3">
-    <summary><span class="n">3</span><h3>Why 蔓花生 wins on poor soil and loses on rich soil</h3><span class="chev">›</span></summary>
+    <summary><span class="n">3</span><span class="head"><h3>Why 蔓花生 wins on poor soil and loses on rich soil</h3><span class="take">It makes its own nitrogen, so it wins where nitrogen is short and gets shaded out on rich soil.</span></span><span class="chev">›</span></summary>
     <div class="body">
       <p>Perennial peanut (<i>Arachis pintoi</i>) has an edge only where soil nitrogen is short. On fertile soil that edge switches off, and faster grasses shade it out.</p>
       <ol>
@@ -198,7 +186,7 @@ details.sec[open] > summary .chev{transform:rotate(90deg)}
   </details>
 
   <details class="sec" id="s4">
-    <summary><span class="n">4</span><h3>蔓花生 vs 茅草 on sandy soil</h3><span class="chev">›</span></summary>
+    <summary><span class="n">4</span><span class="head"><h3>蔓花生 vs 茅草 on sandy soil</h3><span class="take">茅草 wins on dry sand; shade is what pushes it back.</span></span><span class="chev">›</span></summary>
     <div class="body">
       <p>On dry sand, cogongrass (<i>Imperata cylindrica</i>, 茅草) almost always wins. Shade is what pushes it back.</p>
       <div class="compare">
@@ -212,7 +200,7 @@ details.sec[open] > summary .chev{transform:rotate(90deg)}
   </details>
 
   <details class="sec" id="s5">
-    <summary><span class="n">5</span><h3>Roots build more soil than leaves</h3><span class="chev">›</span></summary>
+    <summary><span class="n">5</span><span class="head"><h3>Roots build more soil than leaves</h3><span class="take">Root carbon stays about 2.4× longer, and roots also build pores, crumbs and nutrient cycling.</span></span><span class="chev">›</span></summary>
     <div class="body">
       <p>Carbon from roots stays in soil about <b>2.4 times longer</b> than carbon from leaves and stems. Microbes also turn underground inputs into stable organic matter more efficiently than surface litter.</p>
       <p>Roots build soil in four ways:</p>
@@ -228,7 +216,7 @@ details.sec[open] > summary .chev{transform:rotate(90deg)}
   </details>
 
   <details class="sec" id="s6">
-    <summary><span class="n">6</span><h3>Cutting vs herbicide</h3><span class="chev">›</span></summary>
+    <summary><span class="n">6</span><span class="head"><h3>Cutting vs herbicide</h3><span class="take">Living roots feed the soil continuously; roots killed by spray feed it once.</span></span><span class="chev">›</span></summary>
     <div class="body">
       <p>Cutting beats herbicide for soil building because it keeps roots alive. A systemic herbicide such as glyphosate kills the whole plant, roots included. Those dead roots add organic matter once, and then the soil gets nothing until something regrows.</p>
       <div class="compare">
@@ -242,7 +230,7 @@ details.sec[open] > summary .chev{transform:rotate(90deg)}
   </details>
 
   <details class="sec" id="s7">
-    <summary><span class="n">7</span><h3>Why regular cutting ends in cow grass</h3><span class="chev">›</span></summary>
+    <summary><span class="n">7</span><span class="head"><h3>Why regular cutting ends in cow grass</h3><span class="take">Frequent cutting leaves only low creepers; moderate cutting keeps more variety.</span></span><span class="chev">›</span></summary>
     <div class="body">
       <p>Frequent cutting acts as a filter. Only low, creeping grasses survive it, so diversity drops and cow grass (<i>Axonopus compressus</i>, 地毯草) takes over. The shift is gradual: a mixed sward can take several years of regular cutting to become mostly cow grass.</p>
       <ul>
@@ -256,7 +244,7 @@ details.sec[open] > summary .chev{transform:rotate(90deg)}
   </details>
 
   <details class="sec" id="s8">
-    <summary><span class="n">8</span><h3>Putting it into practice</h3><span class="chev">›</span></summary>
+    <summary><span class="n">8</span><span class="head"><h3>Putting it into practice</h3><span class="take">Leave clippings, cut high and reduce fertilizer step by step.</span></span><span class="chev">›</span></summary>
     <div class="body">
       <p>Cut, leave the cuttings, cut higher, and reduce fertilizer step by step. Each step lowers both fertilizer and cutting costs.</p>
       <ul>
@@ -268,7 +256,7 @@ details.sec[open] > summary .chev{transform:rotate(90deg)}
         <li><b>On 茅草 patches,</b> use shade and tall cover crops, not more cutting alone.</li>
         <li><b>Don't pull or dig.</b></li>
       </ul>
-      <p class="note"><b>Durian induction season is the exception.</b> See the Durian tab.</p>
+      <p class="note"><b>Durian induction season is the exception.</b> See the <a href="#durian">Durian</a> tab.</p>
       <p class="cite">Sources: <a href="https://doi.org/10.2135/cropsci2002.1225">Kopp &amp; Guillard 2002</a> · <a href="https://doi.org/10.3733/ucanr.8006">Harivandi &amp; Gibeault 1999</a></p>
     </div>
   </details>
@@ -319,8 +307,7 @@ details.sec[open] > summary .chev{transform:rotate(90deg)}
 
 <nav class="tabs" aria-label="Sections">
   <div class="tabs-in">
-    <a href="#points" data-tab="points"><svg viewBox="0 0 24 24"><path d="M5 20V9M12 20V4M19 20v-8"/></svg>Points</a>
-    <a href="#learn" data-tab="learn"><svg viewBox="0 0 24 24"><path d="M12 21V11M12 11c0-4 3-7 7-7 0 4-3 7-7 7zM12 14c0-3-2.5-5-6-5 0 3 2.5 5 6 5z"/><path d="M4 21h16"/></svg>Learn</a>
+        <a href="#learn" data-tab="learn"><svg viewBox="0 0 24 24"><path d="M12 21V11M12 11c0-4 3-7 7-7 0 4-3 7-7 7zM12 14c0-3-2.5-5-6-5 0 3 2.5 5 6 5z"/><path d="M4 21h16"/></svg>Learn</a>
     <a href="#durian" data-tab="durian"><svg viewBox="0 0 24 24"><path d="M12 3c4.5 2 7 6 7 10a7 7 0 0 1-14 0c0-4 2.5-8 7-10z"/><path d="M9 11l1.5 1.5M14 10l1 1M10 15l1 1M14.5 14l1 1"/></svg>Durian</a>
     <a href="#sources" data-tab="sources"><svg viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6z"/><path d="M9 10h6M9 14h6M9 18h4"/></svg>Sources</a>
   </div>
@@ -329,17 +316,6 @@ details.sec[open] > summary .chev{transform:rotate(90deg)}
 <div class="toast" id="toast" hidden></div>
 
 <script>
-const POINTS=[
-  ["s1","Monocot grasses such as 茅草 and 地毯草 need less from the soil than dicot covers","Fibrous roots, a protected growing point and efficient C4 photosynthesis."],
-  ["s2","What grows is the soil's report card","Plants also change the soil, which drives succession."],
-  ["s3","蔓花生 thrives on low-nitrogen soil and loses on fertile soil","Soil nitrate switches fixation down; taller grasses then shade it."],
-  ["s4","On sand, 茅草 beats 蔓花生","Shade from trees or tall cover crops is what suppresses 茅草."],
-  ["s5","Roots add more organic matter than leaves","Root carbon stays about 2.4× longer; roots also build pores, crumbs and nutrient cycling."],
-  ["s5","Cut, don't pull; rotting roots leave air channels and nutrients","Cutting high keeps roots growing and the cycle running."],
-  ["s6","Cutting is better than herbicide","Living roots feed the soil continuously; dead roots feed it once."],
-  ["s7","Frequent cutting reduces diversity and ends in cow grass","Diversity peaks at moderate cutting; zones can give both."],
-  ["s8","Cut fertilizer rather than switch to herbicide","Returned clippings replace part of the nitrogen fertilizer."]
-];
 const REFS=[
   ["Akobundu, Udensi & Chikoye (2000). Velvetbean suppresses speargrass and increases maize yield. Int. J. Pest Management.","10.1080/096708700227453"],
   ["CABI (2019). Axonopus compressus (carpet grass). CABI Compendium.","10.1079/cabicompendium.8094"],
@@ -374,36 +350,20 @@ const $=s=>document.querySelector(s);
 const store={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch{return d}},
              set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
 
-// Points
-$('#pointList').innerHTML=POINTS.map(([s,t,d],i)=>`<li><button class="point" type="button" data-sec="${s}">
-  <span class="n">${i+1}</span><span><strong>${t}</strong><span class="t">${d}</span></span><span class="go" aria-hidden="true">›</span></button></li>`).join('');
-document.querySelectorAll('.point').forEach(b=>b.addEventListener('click',()=>openSection(b.dataset.sec)));
-
 // Sources
 $('#refList').innerHTML=REFS.map(([t,doi])=>`<li>${t}${doi?` <a href="https://doi.org/${doi}" target="_blank" rel="noopener">doi:${doi}</a>`:' No DOI.'}</li>`).join('');
 
 // Tabs
-const VIEWS=['points','learn','durian','sources'];
+const VIEWS=['learn','durian','sources'];
 function show(tab){
-  if(!VIEWS.includes(tab)) tab='points';
+  if(!VIEWS.includes(tab)) tab='learn';
   VIEWS.forEach(v=>document.getElementById(v).hidden=v!==tab);
   document.querySelectorAll('.tabs a').forEach(a=>{if(a.dataset.tab===tab)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
 }
 if('scrollRestoration' in history) history.scrollRestoration='manual';
-let pendingSec=null;
-function route(){
-  show(location.hash.slice(1)||'points');
-  if(!pendingSec){window.scrollTo(0,0);return}
-  const d=document.getElementById(pendingSec);pendingSec=null;d.open=true;
-  const y=d.getBoundingClientRect().top+scrollY-(document.querySelector('.top').offsetHeight+12);
-  window.scrollTo(0,y);
-}
+function route(){show(location.hash.slice(1));window.scrollTo(0,0)}
 window.addEventListener('hashchange',route);
 route();
-function openSection(id){
-  pendingSec=id;
-  if(location.hash==='#learn') route(); else location.hash='learn';
-}
 
 // Durian season + checklist
 function setSeason(s){

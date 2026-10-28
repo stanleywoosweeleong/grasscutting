@@ -3,7 +3,7 @@
   "short_name": "Cut & Leave",
   "description": "The science of building orchard soil by cutting grass instead of spraying it, written for durian growers.",
   "id": "./",
-  "start_url": "./#points",
+  "start_url": "./#learn",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
