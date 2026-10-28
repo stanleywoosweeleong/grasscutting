@@ -2,7 +2,10 @@
 // (revalidated with ETags, so unchanged files cost a tiny 304), and the cache is only an
 // offline fallback. Editing index.html or any other file needs no change here.
 // Change CACHE only if you rename or remove files and want the old copies cleared.
-const CACHE = 'cut-leave';
+// Other apps live on the same address (stanleywoosweeleong.github.io) and share Cache Storage,
+// so this worker only ever touches caches whose names start with 'grasscutting'.
+const CACHE = 'grasscutting-v1';
+const MINE = k => k.startsWith('grasscutting') || k === 'cut-leave';  // 'cut-leave' = this app's old cache name
 const SHELL = [
   './',
   './index.html',
@@ -34,13 +37,15 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+      .then(keys => Promise.all(keys.filter(k => MINE(k) && k !== CACHE).map(k => caches.delete(k))))
       // drop copies saved under a ?v= address; files are kept under their plain address
       .then(() => caches.open(CACHE))
       .then(c => c.keys().then(reqs => Promise.all(reqs.filter(r => new URL(r.url).search).map(r => c.delete(r)))))
       .then(() => self.clients.claim())
   );
 });
+
+const mine = (req, opts) => caches.open(CACHE).then(c => c.match(req, opts));
 
 function save(key, res) {
   if (res.ok || res.type === 'opaque') {
@@ -57,7 +62,7 @@ self.addEventListener('fetch', e => {
 
   // Google Fonts never change at a given URL: cache first.
   if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') {
-    e.respondWith(caches.match(req).then(hit => hit || fetch(req).then(res => save(req, res))));
+    e.respondWith(mine(req).then(hit => hit || fetch(req).then(res => save(req, res))));
     return;
   }
   if (url.origin !== self.location.origin) return;
@@ -68,6 +73,6 @@ self.addEventListener('fetch', e => {
   e.respondWith(
     fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' })
       .then(res => save(key, res))
-      .catch(() => caches.match(key, { ignoreSearch: true }).then(hit => hit || caches.match('./index.html')))
+      .catch(() => mine(key, { ignoreSearch: true }).then(hit => hit || mine('./index.html')))
   );
 });
