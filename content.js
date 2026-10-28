@@ -1,0 +1,482 @@
+// All text shown in the app, in three languages. Section ids, sources and checklist ids are shared.
+// Blocks: ['p', html] · ['ol', [html]] · ['ul', [html]] · ['note', html] · ['cmp', {a, b, rows:[[label, a, b, why?]]}]
+
+const CITES = {
+  s1: [['Sage & Pearcy 1987', '10.1104/pp.84.3.954']],
+  s2: [['Chikoye et al. 2000', '10.1016/s0261-2194(00)00044-2'], ['van der Putten et al. 2013', '10.1111/1365-2745.12054']],
+  s3: [['Gutschick 1981', '10.1086/283858'], ['Vance & Heichel 1991', '10.1146/annurev.pp.42.060191.002105'], ['Streeter & Wong 1988', '10.1080/07352688809382257'], ['Ledgard & Steele 1992', '10.1007/BF00011314'], ['Lascano et al. 2005', '10.3920/978-90-8686-552-9_256']],
+  s4: [['MacDonald 2004', '10.1080/07352680490505114'], ['MacDicken et al. 1996', '10.1007/bf00142871'], ['Akobundu et al. 2000', '10.1080/096708700227453']],
+  s5: [['Rasse et al. 2005', '10.1007/s11104-004-0907-y'], ['Sokol & Bradford 2019', '10.1038/s41561-018-0258-6'], ['Cresswell & Kirkegaard 1995', '10.1071/SR9950221'], ['Tisdall & Oades 1982', '10.1111/j.1365-2389.1982.tb01755.x'], ['Rillig 2004', '10.4141/S04-003'], ['Crider 1955 (USDA Tech. Bull. 1102)', null]],
+  s6: [['Sokol & Bradford 2019', '10.1038/s41561-018-0258-6']],
+  s7: [['CABI', '10.1079/cabicompendium.8094'], ['Grime 1973', '10.1038/242344a0'], ['Connell 1978', '10.1126/science.199.4335.1302'], ['Chollet et al. 2018', '10.1016/j.landurbplan.2018.08.009']],
+  s8: [['Kopp & Guillard 2002', '10.2135/cropsci2002.1225'], ['Harivandi & Gibeault 1999', '10.3733/ucanr.8006']]
+};
+
+const REFS = [
+  ['Akobundu, Udensi & Chikoye (2000). Velvetbean suppresses speargrass and increases maize yield. Int. J. Pest Management.', '10.1080/096708700227453'],
+  ['CABI (2019). Axonopus compressus (carpet grass). CABI Compendium.', '10.1079/cabicompendium.8094'],
+  ['CABI (2019). Durio zibethinus (durian). CABI Compendium.', '10.1079/cabicompendium.20179'],
+  ['Carvalho et al. (2019). Nodulation and biological nitrogen fixation in forage peanut (Arachis pintoi). Agric. Ecosyst. Environ.', '10.1016/j.agee.2019.02.016'],
+  ['Chikoye, Manyong & Ekeleme (2000). Characteristics of speargrass-dominated fields in West Africa. Crop Protection.', '10.1016/s0261-2194(00)00044-2'],
+  ['Chikoye et al. (2002). Response of speargrass to cover crops integrated with handweeding and chemical control. Crop Protection.', '10.1016/s0261-2194(01)00078-3'],
+  ['Chollet et al. (2018). From urban lawns to urban meadows: reduction of mowing frequency increases plant diversity. Landscape and Urban Planning.', '10.1016/j.landurbplan.2018.08.009'],
+  ['Connell (1978). Diversity in tropical rain forests and coral reefs. Science 199.', '10.1126/science.199.4335.1302'],
+  ['Cresswell & Kirkegaard (1995). Subsoil amelioration by plant roots: the process and the evidence. Aust. J. Soil Research 33.', '10.1071/SR9950221'],
+  ['Crider (1955). Root-growth stoppage resulting from defoliation of grass. USDA Technical Bulletin 1102.', null],
+  ['Grime (1973). Competitive exclusion in herbaceous vegetation. Nature 242.', '10.1038/242344a0'],
+  ['Gutschick (1981). Evolved strategies in nitrogen acquisition by plants. American Naturalist 118.', '10.1086/283858'],
+  ['Harivandi & Gibeault (1999). Mowing your lawn and grasscycling. UC ANR Publication 8006.', '10.3733/ucanr.8006'],
+  ['Kopp & Guillard (2002). Clipping management and nitrogen fertilization of turfgrass. Crop Science 42.', '10.2135/cropsci2002.1225'],
+  ['Laidlaw (1984). Effect of spring nitrogen fertilizer on white clover content. Grass and Forage Science.', '10.1111/j.1365-2494.1984.tb01702.x'],
+  ['Lascano, Peters & Holmann (2005). Arachis pintoi in the humid tropics of Colombia: a forage legume success story.', '10.3920/978-90-8686-552-9_256'],
+  ['Ledgard & Steele (1992). Biological nitrogen fixation in mixed legume/grass pastures. Plant and Soil 141.', '10.1007/BF00011314'],
+  ['MacDicken et al. (1996). Shade-based control of Imperata cylindrica: tree fallows and cover crops. Agroforestry Systems.', '10.1007/bf00142871'],
+  ['MacDonald (2004). Cogongrass (Imperata cylindrica): biology, ecology, and management. Crit. Rev. Plant Sciences 23.', '10.1080/07352680490505114'],
+  ['Rasse, Rumpel & Dignac (2005). Is soil carbon mostly root carbon? Plant and Soil 269.', '10.1007/s11104-004-0907-y'],
+  ['Rillig (2004). Arbuscular mycorrhizae, glomalin, and soil aggregation. Can. J. Soil Science 84.', '10.4141/S04-003'],
+  ['Sage & Pearcy (1987). The nitrogen use efficiency of C3 and C4 plants. Plant Physiology 84.', '10.1104/pp.84.3.954'],
+  ['Sokol & Bradford (2019). Microbial formation of stable soil carbon is more efficient from belowground than aboveground input. Nature Geoscience 12.', '10.1038/s41561-018-0258-6'],
+  ['Streeter & Wong (1988). Inhibition of legume nodule formation and N2 fixation by nitrate. Crit. Rev. Plant Sciences 7.', '10.1080/07352688809382257'],
+  ['Tisdall & Oades (1982). Organic matter and water-stable aggregates in soils. J. Soil Science 33.', '10.1111/j.1365-2389.1982.tb01755.x'],
+  ['Vance & Heichel (1991). Carbon in N2 fixation: limitation or exquisite adaptation. Annu. Rev. Plant Physiol. 42.', '10.1146/annurev.pp.42.060191.002105'],
+  ['van der Putten et al. (2013). Plant–soil feedbacks: the past, the present and future challenges. Journal of Ecology 101.', '10.1111/1365-2745.12054']
+];
+
+const CABI_DURIAN = 'https://doi.org/10.1079/cabicompendium.20179';
+
+const T = {
+/* ───────────────────────── English ───────────────────────── */
+en: {
+  htmlLang: 'en', code: 'EN', native: 'English',
+  appName: 'Grass Cutting',
+  tabs: { learn: 'Learn', durian: 'Durian', sources: 'Sources' },
+  install: 'Install', installed: 'Installed', offline: 'Offline',
+  iosHint: 'Tap Share, then Add to Home Screen',
+  sourceOne: 'Source:', sourceMany: 'Sources:',
+  langMenu: { title: 'Language', intro: 'Show the introduction again', done: 'Done' },
+  learn: {
+    eyebrow: 'For durian growers',
+    h2: 'Build soil by cutting, not spraying',
+    lede: 'How grass and soil shape each other, with the research behind each point. Tap a section to read it.'
+  },
+  sections: [
+    { t: 'Monocot grasses vs dicot ground covers',
+      take: 'Fibrous roots, a protected growing point and efficient C4 photosynthesis let grasses get by on poorer soil.',
+      b: [
+        ['p', 'Monocots carry one cotyledon (seed leaf) in the seed and dicots carry two. Every true grass (family Poaceae) is a monocot. The dicots used as ground covers are broadleaf plants such as white clover, dichondra and pinto peanut.'],
+        ['cmp', { a: 'Monocot', b: 'Dicot', rows: [
+          ['Roots', 'Fibrous mat from the crown', 'Taproot, plus roots at creeping nodes', 'A fibrous mat copes with thin or compact soil. A taproot needs loose, deep soil.'],
+          ['Leaves', 'Narrow, parallel veins', 'Broad, net veins', 'Broad leaves lose more water, so they need steadier moisture.'],
+          ['Growing point', 'At the crown, near the soil', 'At shoot tips, above ground', 'Cutting removes dicot tips but spares grass crowns.'],
+          ['Photosynthesis', 'Mostly C4 (tropical turf)', 'C3', 'C4 makes more growth per unit of water and nitrogen.']
+        ] }],
+        ['p', 'Legumes such as pinto peanut add one twist: they make their own nitrogen, so what they need from fertile soil is phosphorus, potassium and moisture (section 3).']
+      ] },
+    { t: "What grows is the soil's report card",
+      take: 'What grows reflects the soil, and the plants slowly change it.',
+      b: [
+        ['p', "What grows naturally reflects the soil's water, nutrients, structure and disturbance history. Ecologists call these <b>indicator plants</b>. Fields dominated by cogongrass in West Africa, for example, had degraded, low-fertility soils."],
+        ['p', 'The report card also feeds back. Plants change their soil through dead roots, root exudates, the microbes they host and the nutrients they pull up. The changed soil then favours different plants. This <b>plant–soil feedback</b> drives succession.'],
+        ['p', "You can't pick a grass to fix soil overnight. Managing the vegetation that grows there, mainly by how you cut it, is how the soil improves over the years."]
+      ] },
+    { t: 'Why pinto peanut wins on poor soil and loses on rich soil',
+      take: 'It makes its own nitrogen, so it wins where nitrogen is short and gets shaded out on rich soil.',
+      b: [
+        ['p', 'Pinto peanut (<i>Arachis pintoi</i>) has an edge only where soil nitrogen is short. On fertile soil that edge switches off, and faster grasses shade it out.'],
+        ['ol', [
+          "<b>Fixing nitrogen costs energy.</b> Root-nodule bacteria turn air nitrogen into ammonia, paid for with the plant's sugars. That costs more than taking nitrate from the soil.",
+          '<b>On low-nitrogen soil the cost pays off.</b> Grasses are held back by the shortage; the legume is not.',
+          '<b>On rich soil, fixation switches down.</b> Soil nitrate suppresses nodules, so the legume loses its edge.',
+          '<b>Then it competes for light and loses.</b> C4 grasses grow taller and faster in heat. In mixed pastures, nitrogen fertilizer reliably lowers the legume share.'
+        ]],
+        ['p', 'On a fertile, fertilized orchard floor, the natural vegetation is grass, and pinto peanut is working against it.']
+      ] },
+    { t: 'Pinto peanut vs cogongrass on sandy soil',
+      take: 'Cogongrass wins on dry sand; shade is what pushes it back.',
+      b: [
+        ['p', 'On dry sand, cogongrass (<i>Imperata cylindrica</i>) almost always wins. Shade is what pushes it back.'],
+        ['cmp', { a: 'Cogongrass', b: 'Pinto peanut', rows: [
+          ['Below ground', 'Dense rhizomes; regrows after cutting and fire', 'Taproot and stolons; slow to establish'],
+          ['Drought on sand', 'Tolerates it', 'Fixation and growth slow down'],
+          ['Weakness', 'Shade', 'Being overtopped']
+        ] }],
+        ['p', 'Shade from tree fallows or tall cover crops such as velvet bean (<i>Mucuna</i>) suppresses cogongrass. Pinto peanut grows too low to do that. In an orchard, the closing tree canopy does the job over time.']
+      ] },
+    { t: 'Roots build more soil than leaves',
+      take: 'Root carbon stays about 2.4× longer, and roots also build pores, crumbs and nutrient cycling.',
+      b: [
+        ['p', 'Carbon from roots stays in soil about <b>2.4 times longer</b> than carbon from leaves and stems. Microbes also turn underground inputs into stable organic matter more efficiently than surface litter.'],
+        ['p', 'Roots build soil in four ways:'],
+        ['ul', [
+          '<b>Organic matter.</b> Dead roots and root sugars feed microbes, whose remains bind to clay as stable carbon.',
+          '<b>Pores.</b> Growing roots push soil apart; rotted roots leave channels for air, water, earthworms and new roots.',
+          '<b>Glue.</b> Fine roots, fungal threads and the fungal protein glomalin bind clay into crumbs that drain instead of sealing.',
+          '<b>Chemistry and soil life.</b> Roots free locked phosphorus, lift nutrients from depth and feed the soil food web.'
+        ]],
+        ['note', "<b>Cut high to keep roots growing.</b> Removing more than about half of a grass's leaf area stopped root growth in a classic USDA study. Occasional cuts feed the soil; scalping shrinks the roots that build it."]
+      ] },
+    { t: 'Cutting vs herbicide',
+      take: 'Living roots feed the soil continuously; roots killed by spray feed it once.',
+      b: [
+        ['p', 'Cutting beats herbicide for soil building because it keeps roots alive. A systemic herbicide such as glyphosate kills the whole plant, roots included. Those dead roots add organic matter once, and then the soil gets nothing until something regrows.'],
+        ['cmp', { a: 'Cutting', b: 'Herbicide', rows: [
+          ['Roots', 'Alive; shed and regrow each cut', 'Die once'],
+          ['Soil cover', 'Always covered', 'Bare; crusting and erosion'],
+          ['Organic matter', 'Small pulses for years', 'One pulse']
+        ] }],
+        ['p', 'Pulling or digging is worse than either, because it also breaks up the soil crumbs.']
+      ] },
+    { t: 'Why regular cutting ends in cow grass',
+      take: 'Frequent cutting leaves only low creepers; moderate cutting keeps more variety.',
+      b: [
+        ['p', 'Frequent cutting acts as a filter. Only low, creeping grasses survive it, so diversity drops and cow grass (<i>Axonopus compressus</i>) takes over. The shift is gradual: a mixed sward can take several years of regular cutting to become mostly cow grass.'],
+        ['ul', [
+          '<b>Who survives:</b> cow grass spreads by stolons with its growing points below cutting height. It suits moist, slightly acidic soils and tolerates part shade.',
+          '<b>The pattern:</b> species richness peaks at moderate disturbance. Very frequent cutting leaves only tolerant species; rare cutting lets a few tall ones dominate.',
+          '<b>Direct evidence:</b> cutting urban lawns less often increased plant diversity.'
+        ]],
+        ['p', 'A uniform cow-grass mat is easy, covers soil well and grows slowly. A mixed sward has roots at more depths and more soil life.']
+      ] },
+    { t: 'Putting it into practice',
+      take: 'Leave clippings, cut high and reduce fertilizer step by step.',
+      b: [
+        ['p', 'Cut, leave the cuttings, cut higher, and reduce fertilizer step by step. Each step lowers both fertilizer and cutting costs.'],
+        ['ul', [
+          '<b>Leave the clippings.</b> Returning clippings substantially reduced the nitrogen fertilizer turf needed. Rake surplus into tree rings as mulch.',
+          '<b>Cut higher.</b> About 10–15 cm is a reasonable working height for an orchard floor (a suggestion, not from a study).',
+          '<b>Reduce fertilizer gradually</b> and watch whether the cow grass stays green and dense.',
+          '<b>Time cuts against seeding</b> to shift the mix without herbicide.',
+          '<b>Use zones for diversity:</b> paths and tree rings short, the rest cut less often.',
+          '<b>On cogongrass patches,</b> use shade and tall cover crops, not more cutting alone.',
+          "<b>Don't pull or dig.</b>"
+        ]],
+        ['note', '<b>Durian induction season is the exception.</b> See the <a href="#durian">Durian</a> tab.']
+      ] }
+  ],
+  durian: {
+    eyebrow: 'Durian orchards',
+    h2: 'Two seasons on the orchard floor',
+    lede: 'Durian flowering needs a stress signal from the root zone. After the leaf flush matures, the root zone must dry out and the ground must reach a certain temperature. A thick grass mat and mulch keep it moist and cool.',
+    normal: 'Normal season', induction: 'Induction season',
+    normalTitle: 'Most of the year: build soil',
+    normalItems: [
+      ['n1', 'Cut every few months; never pull or dig'],
+      ['n2', 'Cut high, about 10–15 cm'],
+      ['n3', 'Leave clippings; rake surplus into tree rings'],
+      ['n4', 'Cut unwanted species before they set seed'],
+      ['n5', 'Reduce fertilizer a step and watch the grass']
+    ],
+    inductionTitle: 'Before and during induction: let the root zone dry and warm',
+    inductionItems: [
+      ['i1', 'Cut short under the canopy'],
+      ['i2', 'Rake clippings and mulch out of the root zone'],
+      ['i3', 'Hold back nitrogen; it pushes leaf flushes instead of flowers'],
+      ['i4', 'Start once the last leaf flush has hardened to dark green and dry weather is coming'],
+      ['i6', "Note the dates of the flush, the dry spell and the first flower buds, to learn your orchard's timing year by year"],
+      ['i5', 'After fruit set, return to the normal cycle']
+    ],
+    clear: 'Clear ticks', cleared: 'Ticks cleared',
+    cite: `Published guidance emphasises a dry spell after the leaf flush (<a href="${CABI_DURIAN}">CABI: Durio zibethinus</a>). This approach works with that natural signal, with no growth regulators. Ticks are saved on this phone only.`
+  },
+  sources: { eyebrow: 'References', h2: 'Sources', lede: 'Every DOI was checked against the Crossref registry. Crider 1955 has no DOI.', noDoi: 'No DOI.' },
+  onboard: {
+    slides: [
+      { t: "Cut, don't spray", d: 'Regular cutting keeps roots alive. Living roots feed the soil all year; sprayed roots feed it once.' },
+      { t: 'Roots build the soil', d: 'Dead and living roots add organic matter, open pores for air and water, and glue clay into crumbs.' },
+      { t: 'Two seasons for durian', d: 'Build soil most of the year, then let the root zone dry and warm before flowering. The Durian tab has a checklist for each.' }
+    ],
+    tip: 'Tip: install the app to read it offline in the orchard.',
+    next: 'Next', start: 'Start reading', skip: 'Skip', back: 'Back'
+  }
+},
+
+/* ───────────────────────── 中文 ───────────────────────── */
+zh: {
+  htmlLang: 'zh-Hans', code: '中', native: '中文',
+  appName: '割草养土',
+  tabs: { learn: '学习', durian: '榴莲', sources: '来源' },
+  install: '安装', installed: '已安装', offline: '离线',
+  iosHint: '点“分享”，再点“添加到主屏幕”',
+  sourceOne: '来源：', sourceMany: '来源：',
+  langMenu: { title: '语言', intro: '再看一次介绍', done: '完成' },
+  learn: {
+    eyebrow: '写给榴莲园主',
+    h2: '割草养土，不喷除草剂',
+    lede: '草与土如何相互影响，以及每一点背后的研究。点开任一节阅读。'
+  },
+  sections: [
+    { t: '单子叶禾草与双子叶地被',
+      take: '须根、受保护的生长点和高效的 C4 光合作用，让禾草在较贫瘠的土壤里也能生长。',
+      b: [
+        ['p', '单子叶植物的种子只有一片子叶，双子叶植物有两片。所有真正的禾草（禾本科）都是单子叶植物。用作地被的双子叶植物是阔叶植物，例如白车轴草、马蹄金和蔓花生。'],
+        ['cmp', { a: '单子叶', b: '双子叶', rows: [
+          ['根系', '从根冠长出的须根网', '主根，加上匍匐茎节上的根', '须根网能适应薄土或紧实的土；主根需要疏松深厚的土。'],
+          ['叶片', '窄叶，平行脉', '阔叶，网状脉', '阔叶失水更多，所以需要更稳定的水分。'],
+          ['生长点', '在根冠，贴近地面', '在枝梢，高于地面', '割草会剪掉双子叶的枝梢，却保住禾草的根冠。'],
+          ['光合作用', '多为 C4（热带草坪草）', 'C3', 'C4 每单位水和氮能长出更多。']
+        ] }],
+        ['p', '豆科植物如蔓花生有一点不同：它们自己固氮，所以它们需要肥沃土壤提供的是磷、钾和水分（见第 3 节）。']
+      ] },
+    { t: '长出什么，就是土壤的成绩单',
+      take: '长出来的植物反映土壤，植物也在慢慢改变土壤。',
+      b: [
+        ['p', '自然长出的植物反映了土壤的水分、养分、结构和受干扰的历史。生态学称之为<b>指示植物</b>。例如在西非，茅草占优势的田地，土壤多已退化、肥力低。'],
+        ['p', '成绩单也会反过来影响土壤。植物通过死根、根系分泌物、共生的微生物和从深层吸上来的养分改变土壤，改变后的土壤又会偏向另一些植物。这种<b>植物–土壤反馈</b>推动着植被演替。'],
+        ['p', '不可能挑一种草一夜之间改良土壤。管理好长在那里的植被，主要靠怎么割草，土壤才会年复一年地变好。']
+      ] },
+    { t: '为什么蔓花生在贫瘠土壤胜出、在肥沃土壤落败',
+      take: '它自己固氮，所以在缺氮的地方占优势，在肥土上则被禾草遮住。',
+      b: [
+        ['p', '蔓花生（<i>Arachis pintoi</i>）只在土壤缺氮时才有优势。在肥沃的土壤上，这个优势就消失了，长得更快的禾草会把它遮住。'],
+        ['ol', [
+          '<b>固氮要消耗能量。</b>根瘤菌把空气中的氮转化为氨，代价是植物的糖分。这比直接从土壤吸收硝态氮更“贵”。',
+          '<b>在缺氮的土壤，这个代价划算。</b>禾草受缺氮限制，豆科植物却不受影响。',
+          '<b>在肥沃的土壤，固氮会减弱。</b>土壤中的硝态氮会抑制根瘤，豆科植物就失去了优势。',
+          '<b>接着比的是抢阳光，它会输。</b>C4 禾草在高温下长得更高更快。在混播牧场里，施氮肥一定会降低豆科的比例。'
+        ]],
+        ['p', '在肥沃、又有施肥的果园地面，自然的植被就是禾草，种蔓花生等于逆着自然走。']
+      ] },
+    { t: '沙地上：蔓花生与茅草',
+      take: '在干沙地上茅草会赢；能压住它的是遮荫。',
+      b: [
+        ['p', '在干燥的沙地上，茅草（<i>Imperata cylindrica</i>）几乎总是赢。能压住它的是遮荫。'],
+        ['cmp', { a: '茅草', b: '蔓花生', rows: [
+          ['地下部分', '密集的根茎；割了、烧了都会再长', '主根加匍匐茎；建立很慢'],
+          ['沙地干旱', '耐得住', '固氮和生长都会放缓'],
+          ['弱点', '怕遮荫', '怕被高的植物盖过']
+        ] }],
+        ['p', '休耕地上的树木，或高大的覆盖作物如黧豆（<i>Mucuna</i>）带来的遮荫，能压制茅草。蔓花生长得太矮，做不到。在果园里，树冠慢慢郁闭就会完成这件事。']
+      ] },
+    { t: '根比叶更能养土',
+      take: '根的碳在土里停留的时间约长 2.4 倍，根还能造孔隙、团粒，推动养分循环。',
+      b: [
+        ['p', '来自根的碳在土壤中停留的时间，约是来自叶和茎的碳的 <b>2.4 倍</b>。微生物把地下来源转化为稳定有机质的效率，也比地表落叶高。'],
+        ['p', '根通过四种方式养土：'],
+        ['ul', [
+          '<b>有机质。</b>死根和根分泌的糖分喂养微生物，微生物的残体与黏土结合，成为稳定的碳。',
+          '<b>孔隙。</b>生长的根把土撑开；烂掉的根留下通道，让空气、水、蚯蚓和新根通过。',
+          '<b>胶结。</b>细根、真菌菌丝和真菌蛋白球囊霉素把黏土粘成团粒，团粒土排水好，不会板结。',
+          '<b>化学与土壤生物。</b>根能释放被固定的磷，把深层养分带上来，并喂养土壤食物网。'
+        ]],
+        ['note', '<b>割高一点，让根继续长。</b>美国农业部一项经典研究发现，剪掉草叶面积的一半以上，根就停止生长。偶尔割草是在喂土；剃得太低反而会让养土的根缩小。']
+      ] },
+    { t: '割草与除草剂',
+      take: '活根持续喂土；被喷死的根只喂一次。',
+      b: [
+        ['p', '就养土而言，割草胜过除草剂，因为割草让根活着。草甘膦这类内吸性除草剂会杀死整株植物，连根一起。那些死根只增加一次有机质，之后土壤就什么都得不到，直到有东西重新长出来。'],
+        ['cmp', { a: '割草', b: '除草剂', rows: [
+          ['根', '活着；每割一次就脱落再长', '死一次'],
+          ['地面覆盖', '一直有覆盖', '裸露；结皮和冲刷'],
+          ['有机质', '年年小量补充', '只有一次']
+        ] }],
+        ['p', '拔草或挖草比两者都差，因为还会破坏土壤团粒。']
+      ] },
+    { t: '为什么经常割草，最后只剩地毯草',
+      take: '频繁割草只留下低矮的匍匐草；适度割草能保留更多种类。',
+      b: [
+        ['p', '频繁割草就像一个筛子，只有低矮、匍匐的草能存活，所以种类减少，地毯草（<i>Axonopus compressus</i>，俗称 cow grass）逐渐占据。这是慢慢发生的：混杂的草地可能要经过几年的定期割草，才会变成以地毯草为主。'],
+        ['ul', [
+          '<b>谁能存活：</b>地毯草靠匍匐茎蔓延，生长点低于割草高度。它适合湿润、微酸的土壤，也耐半阴。',
+          '<b>规律：</b>物种数量在中等干扰时最多。割得太频繁只剩耐割的种类；很少割则让少数高大的草独占。',
+          '<b>直接证据：</b>减少城市草坪的割草次数，植物多样性就增加了。'
+        ]],
+        ['p', '清一色的地毯草省事、覆盖好、长得慢。混杂的草地则有不同深度的根，土壤生物也更多。']
+      ] },
+    { t: '实际做法',
+      take: '留下草屑、割高一点、逐步减少肥料。',
+      b: [
+        ['p', '割草、留下草屑、割高一点，并逐步减少施肥。每一步都能同时降低肥料和割草的成本。'],
+        ['ul', [
+          '<b>留下草屑。</b>研究发现，把草屑留在草地上能大幅减少所需的氮肥。多余的草屑可耙到树盘当覆盖物。',
+          '<b>割高一点。</b>果园地面留约 10–15 厘米是合理的高度（这是建议，不是研究数据）。',
+          '<b>逐步减少肥料，</b>观察地毯草是否依然青绿茂密。',
+          '<b>在杂草结籽前割，</b>不用除草剂也能改变草的组成。',
+          '<b>分区管理以保留多样性：</b>走道和树盘割短，其他地方少割一些。',
+          '<b>遇到茅草丛，</b>要靠遮荫和高大的覆盖作物，单靠多割不够。',
+          '<b>不要拔草或挖草。</b>'
+        ]],
+        ['note', '<b>榴莲催花季节是例外。</b>请看<a href="#durian">榴莲</a>页。']
+      ] }
+  ],
+  durian: {
+    eyebrow: '榴莲园',
+    h2: '果园地面的两个季节',
+    lede: '榴莲开花需要根区传来的压力信号。新梢老熟后，根区要变干，地温也要达到一定程度。厚厚的草层和覆盖物会让根区保持湿润、凉爽。',
+    normal: '平常季节', induction: '催花季节',
+    normalTitle: '一年中大部分时间：养土',
+    normalItems: [
+      ['n1', '每隔几个月割一次草；绝不拔草或挖草'],
+      ['n2', '割高一点，约 10–15 厘米'],
+      ['n3', '留下草屑；多余的耙到树盘'],
+      ['n4', '在杂草结籽前割掉'],
+      ['n5', '减少一点肥料，观察草的状况']
+    ],
+    inductionTitle: '催花前和催花期间：让根区变干变暖',
+    inductionItems: [
+      ['i1', '把树冠下的草割短'],
+      ['i2', '把草屑和覆盖物耙出根区'],
+      ['i3', '暂停氮肥；氮会促发新叶而不是开花'],
+      ['i4', '等最后一次新梢老熟转深绿、旱天将到时开始'],
+      ['i6', '记下抽梢、旱期和第一批花芽的日期，一年年摸清自己果园的时间'],
+      ['i5', '坐果后，回到平常的做法']
+    ],
+    clear: '清除勾选', cleared: '已清除勾选',
+    cite: `已发表的资料强调抽梢后需要一段旱期（<a href="${CABI_DURIAN}">CABI：榴莲</a>）。这个做法顺应这种自然信号，不使用植物生长调节剂。勾选只保存在这部手机上。`
+  },
+  sources: { eyebrow: '参考文献', h2: '资料来源', lede: '所有 DOI 都已在 Crossref 登记库中核对。Crider 1955 没有 DOI。文献按原文（英文）列出。', noDoi: '无 DOI。' },
+  onboard: {
+    slides: [
+      { t: '割草，不喷药', d: '定期割草让根活着。活根全年喂土；被喷死的根只喂一次。' },
+      { t: '根在养土', d: '死根和活根增加有机质，打开空气和水的通道，把黏土粘成团粒。' },
+      { t: '榴莲的两个季节', d: '一年大部分时间养土，开花前让根区变干变暖。“榴莲”页为每个季节准备了清单。' }
+    ],
+    tip: '提示：安装这个应用，在果园里没网也能看。',
+    next: '下一步', start: '开始阅读', skip: '跳过', back: '返回'
+  }
+},
+
+/* ───────────────────────── Bahasa Melayu ───────────────────────── */
+ms: {
+  htmlLang: 'ms', code: 'BM', native: 'Bahasa Melayu',
+  appName: 'Potong Rumput',
+  tabs: { learn: 'Belajar', durian: 'Durian', sources: 'Sumber' },
+  install: 'Pasang', installed: 'Dipasang', offline: 'Luar talian',
+  iosHint: 'Ketik Kongsi, kemudian Tambah ke Skrin Utama',
+  sourceOne: 'Sumber:', sourceMany: 'Sumber:',
+  langMenu: { title: 'Bahasa', intro: 'Tunjukkan pengenalan semula', done: 'Selesai' },
+  learn: {
+    eyebrow: 'Untuk penanam durian',
+    h2: 'Bina tanah dengan memotong, bukan menyembur',
+    lede: 'Bagaimana rumput dan tanah saling membentuk, dengan kajian di sebalik setiap perkara. Ketik satu bahagian untuk membacanya.'
+  },
+  sections: [
+    { t: 'Rumput monokot dan penutup bumi dikot',
+      take: 'Akar serabut, titik tumbuh yang terlindung dan fotosintesis C4 yang cekap membolehkan rumput hidup di tanah yang lebih miskin.',
+      b: [
+        ['p', 'Tumbuhan monokot mempunyai satu kotiledon (daun lembaga) dalam biji, manakala dikot mempunyai dua. Semua rumput sebenar (famili Poaceae) ialah monokot. Dikot yang dijadikan penutup bumi ialah tumbuhan berdaun lebar seperti semanggi putih, dichondra dan kacang pintoi.'],
+        ['cmp', { a: 'Monokot', b: 'Dikot', rows: [
+          ['Akar', 'Jaringan akar serabut dari pangkal', 'Akar tunjang, serta akar pada buku batang menjalar', 'Akar serabut sesuai dengan tanah nipis atau padat. Akar tunjang memerlukan tanah gembur dan dalam.'],
+          ['Daun', 'Sempit, urat selari', 'Lebar, urat jaring', 'Daun lebar kehilangan lebih banyak air, jadi memerlukan kelembapan yang lebih stabil.'],
+          ['Titik tumbuh', 'Di pangkal, dekat tanah', 'Di hujung pucuk, di atas tanah', 'Memotong membuang hujung pucuk dikot tetapi tidak menjejaskan pangkal rumput.'],
+          ['Fotosintesis', 'Kebanyakannya C4 (rumput tropika)', 'C3', 'C4 menghasilkan lebih banyak pertumbuhan bagi setiap unit air dan nitrogen.']
+        ] }],
+        ['p', 'Kekacang seperti kacang pintoi sedikit berbeza: ia menghasilkan nitrogen sendiri, jadi yang diperlukannya daripada tanah subur ialah fosforus, kalium dan kelembapan (bahagian 3).']
+      ] },
+    { t: 'Apa yang tumbuh ialah kad laporan tanah',
+      take: 'Tumbuhan yang tumbuh mencerminkan tanah, dan tumbuhan itu perlahan-lahan mengubahnya.',
+      b: [
+        ['p', 'Tumbuhan yang tumbuh secara semula jadi mencerminkan air, nutrien, struktur dan sejarah gangguan tanah. Ahli ekologi menggelarnya <b>tumbuhan penunjuk</b>. Contohnya, di Afrika Barat, ladang yang dikuasai lalang mempunyai tanah yang merosot dan kurang subur.'],
+        ['p', 'Kad laporan ini juga memberi kesan balik. Tumbuhan mengubah tanahnya melalui akar yang mati, rembesan akar, mikrob yang menumpang padanya dan nutrien yang ditarik dari lapisan bawah. Tanah yang berubah pula menyebelahi tumbuhan lain. <b>Suap balik tumbuhan–tanah</b> ini menggerakkan sesaran tumbuhan.'],
+        ['p', 'Kita tidak boleh memilih sejenis rumput untuk membaiki tanah dalam semalam. Mengurus tumbuhan yang tumbuh di situ, terutamanya melalui cara memotongnya, ialah cara tanah menjadi lebih baik dari tahun ke tahun.']
+      ] },
+    { t: 'Mengapa kacang pintoi menang di tanah miskin dan kalah di tanah subur',
+      take: 'Ia menghasilkan nitrogen sendiri, jadi ia menang di tempat yang kurang nitrogen tetapi kalah kerana dinaungi rumput di tanah subur.',
+      b: [
+        ['p', 'Kacang pintoi (<i>Arachis pintoi</i>) hanya mempunyai kelebihan apabila tanah kekurangan nitrogen. Di tanah subur, kelebihan itu hilang, dan rumput yang tumbuh lebih cepat menaunginya.'],
+        ['ol', [
+          '<b>Mengikat nitrogen memerlukan tenaga.</b> Bakteria bintil akar menukar nitrogen udara kepada ammonia, dibayar dengan gula tumbuhan. Kosnya lebih tinggi daripada menyerap nitrat daripada tanah.',
+          '<b>Di tanah kurang nitrogen, kos itu berbaloi.</b> Rumput terbantut kerana kekurangan; kekacang tidak.',
+          '<b>Di tanah subur, pengikatan nitrogen berkurang.</b> Nitrat dalam tanah menyekat bintil akar, jadi kekacang hilang kelebihannya.',
+          '<b>Kemudian ia bersaing untuk cahaya dan kalah.</b> Rumput C4 tumbuh lebih tinggi dan cepat dalam cuaca panas. Di padang ragut campuran, baja nitrogen sentiasa mengurangkan bahagian kekacang.'
+        ]],
+        ['p', 'Di lantai dusun yang subur dan dibaja, tumbuhan semula jadinya ialah rumput, dan menanam kacang pintoi bermakna melawan arus.']
+      ] },
+    { t: 'Kacang pintoi dan lalang di tanah berpasir',
+      take: 'Lalang menang di pasir kering; naunganlah yang dapat menekannya.',
+      b: [
+        ['p', 'Di pasir kering, lalang (<i>Imperata cylindrica</i>) hampir selalu menang. Naunganlah yang dapat menekannya.'],
+        ['cmp', { a: 'Lalang', b: 'Kacang pintoi', rows: [
+          ['Bawah tanah', 'Rizom padat; tumbuh semula selepas dipotong dan dibakar', 'Akar tunjang dan stolon; lambat bertapak'],
+          ['Kemarau di tanah pasir', 'Tahan', 'Pengikatan nitrogen dan pertumbuhan menjadi perlahan'],
+          ['Kelemahan', 'Naungan', 'Ditenggelami tumbuhan yang lebih tinggi']
+        ] }],
+        ['p', 'Naungan daripada pokok di tanah rehat atau tanaman penutup bumi yang tinggi seperti kacang baldu (<i>Mucuna</i>) menekan lalang. Kacang pintoi terlalu rendah untuk berbuat begitu. Di dusun, kanopi pokok yang semakin rapat akan melakukannya dari masa ke masa.']
+      ] },
+    { t: 'Akar membina tanah lebih daripada daun',
+      take: 'Karbon akar kekal kira-kira 2.4 kali lebih lama, dan akar juga membina liang, gumpalan tanah dan kitaran nutrien.',
+      b: [
+        ['p', 'Karbon daripada akar kekal dalam tanah kira-kira <b>2.4 kali lebih lama</b> daripada karbon daripada daun dan batang. Mikrob juga menukar input bawah tanah kepada bahan organik yang stabil dengan lebih cekap berbanding sampah daun di permukaan.'],
+        ['p', 'Akar membina tanah dengan empat cara:'],
+        ['ul', [
+          '<b>Bahan organik.</b> Akar mati dan gula akar memberi makan mikrob, dan sisa mikrob terikat pada tanah liat sebagai karbon yang stabil.',
+          '<b>Liang.</b> Akar yang tumbuh menolak tanah; akar yang reput meninggalkan saluran untuk udara, air, cacing tanah dan akar baharu.',
+          '<b>Perekat.</b> Akar halus, hifa kulat dan protein kulat glomalin mengikat tanah liat menjadi gumpalan yang menyalirkan air dan tidak memadat.',
+          '<b>Kimia dan hidupan tanah.</b> Akar membebaskan fosforus yang terikat, menaikkan nutrien dari lapisan dalam dan memberi makan rantaian makanan tanah.'
+        ]],
+        ['note', '<b>Potong tinggi supaya akar terus tumbuh.</b> Dalam satu kajian klasik USDA, membuang lebih daripada separuh luas daun rumput menghentikan pertumbuhan akar. Potongan sekali-sekala memberi makan tanah; memotong terlalu rendah mengecilkan akar yang membina tanah.']
+      ] },
+    { t: 'Memotong dan racun rumpai',
+      take: 'Akar hidup memberi makan tanah secara berterusan; akar yang mati disembur hanya sekali.',
+      b: [
+        ['p', 'Untuk membina tanah, memotong lebih baik daripada racun rumpai kerana ia mengekalkan akar hidup. Racun sistemik seperti glifosat membunuh seluruh tumbuhan, termasuk akar. Akar yang mati itu menambah bahan organik sekali sahaja, kemudian tanah tidak mendapat apa-apa sehingga sesuatu tumbuh semula.'],
+        ['cmp', { a: 'Memotong', b: 'Racun rumpai', rows: [
+          ['Akar', 'Hidup; gugur dan tumbuh semula setiap kali dipotong', 'Mati sekali'],
+          ['Litupan tanah', 'Sentiasa berlitup', 'Terdedah; berkerak dan terhakis'],
+          ['Bahan organik', 'Sedikit demi sedikit selama bertahun-tahun', 'Sekali sahaja']
+        ] }],
+        ['p', 'Mencabut atau menggali lebih teruk daripada kedua-duanya, kerana ia juga memecahkan gumpalan tanah.']
+      ] },
+    { t: 'Mengapa pemotongan kerap berakhir dengan cow grass',
+      take: 'Pemotongan kerap hanya meninggalkan rumput menjalar yang rendah; pemotongan sederhana mengekalkan lebih banyak jenis.',
+      b: [
+        ['p', 'Pemotongan kerap bertindak seperti penapis. Hanya rumput rendah yang menjalar dapat bertahan, jadi kepelbagaian menurun dan cow grass (<i>Axonopus compressus</i>) mengambil alih. Perubahan ini berlaku perlahan: kawasan rumput campuran mungkin mengambil beberapa tahun pemotongan berkala untuk menjadi kebanyakannya cow grass.'],
+        ['ul', [
+          '<b>Siapa yang bertahan:</b> cow grass merebak melalui stolon dengan titik tumbuh di bawah paras pemotongan. Ia sesuai dengan tanah lembap yang sedikit berasid dan tahan separa teduh.',
+          '<b>Coraknya:</b> bilangan spesies paling tinggi pada gangguan sederhana. Pemotongan terlalu kerap hanya meninggalkan spesies yang tahan; pemotongan yang jarang membiarkan beberapa spesies tinggi menguasai.',
+          '<b>Bukti langsung:</b> mengurangkan kekerapan memotong rumput di bandar meningkatkan kepelbagaian tumbuhan.'
+        ]],
+        ['p', 'Hamparan cow grass yang seragam mudah dijaga, melitupi tanah dengan baik dan tumbuh perlahan. Rumput campuran mempunyai akar pada lebih banyak kedalaman dan lebih banyak hidupan tanah.']
+      ] },
+    { t: 'Mempraktikkannya',
+      take: 'Tinggalkan keratan rumput, potong tinggi dan kurangkan baja secara berperingkat.',
+      b: [
+        ['p', 'Potong, tinggalkan keratan, potong lebih tinggi, dan kurangkan baja secara berperingkat. Setiap langkah menurunkan kos baja dan kos memotong.'],
+        ['ul', [
+          '<b>Tinggalkan keratan rumput.</b> Memulangkan keratan rumput banyak mengurangkan baja nitrogen yang diperlukan. Sapukan lebihan ke bulatan pokok sebagai sungkupan.',
+          '<b>Potong lebih tinggi.</b> Kira-kira 10–15 cm ialah ketinggian yang munasabah untuk lantai dusun (cadangan, bukan daripada kajian).',
+          '<b>Kurangkan baja secara beransur-ansur</b> dan perhatikan sama ada cow grass kekal hijau dan padat.',
+          '<b>Potong sebelum rumpai berbiji</b> untuk mengubah campuran rumput tanpa racun.',
+          '<b>Gunakan zon untuk kepelbagaian:</b> laluan dan bulatan pokok dipotong pendek, selebihnya jarang dipotong.',
+          '<b>Di tompok lalang,</b> gunakan naungan dan tanaman penutup bumi yang tinggi, bukan sekadar memotong lebih kerap.',
+          '<b>Jangan cabut atau gali.</b>'
+        ]],
+        ['note', '<b>Musim aruhan bunga durian ialah pengecualian.</b> Lihat tab <a href="#durian">Durian</a>.']
+      ] }
+  ],
+  durian: {
+    eyebrow: 'Dusun durian',
+    h2: 'Dua musim di lantai dusun',
+    lede: 'Pembungaan durian memerlukan isyarat tekanan daripada zon akar. Selepas pucuk daun matang, zon akar mesti kering dan suhu tanah mesti mencapai tahap tertentu. Lapisan rumput yang tebal dan sungkupan mengekalkannya lembap dan sejuk.',
+    normal: 'Musim biasa', induction: 'Musim aruhan',
+    normalTitle: 'Sepanjang tahun: bina tanah',
+    normalItems: [
+      ['n1', 'Potong setiap beberapa bulan; jangan sekali-kali cabut atau gali'],
+      ['n2', 'Potong tinggi, kira-kira 10–15 cm'],
+      ['n3', 'Tinggalkan keratan; sapukan lebihan ke bulatan pokok'],
+      ['n4', 'Potong rumpai sebelum ia berbiji'],
+      ['n5', 'Kurangkan baja sedikit dan perhatikan rumput']
+    ],
+    inductionTitle: 'Sebelum dan semasa aruhan: biarkan zon akar kering dan panas',
+    inductionItems: [
+      ['i1', 'Potong pendek di bawah kanopi'],
+      ['i2', 'Sapukan keratan dan sungkupan keluar dari zon akar'],
+      ['i3', 'Tahan baja nitrogen; ia menggalakkan pucuk daun, bukan bunga'],
+      ['i4', 'Mulakan apabila pucuk daun terakhir sudah keras dan hijau tua, dan cuaca kering hampir tiba'],
+      ['i6', 'Catat tarikh pucuk, musim kering dan putik bunga pertama, untuk mengenal masa dusun anda dari tahun ke tahun'],
+      ['i5', 'Selepas buah menjadi, kembali kepada kitaran biasa']
+    ],
+    clear: 'Kosongkan tanda', cleared: 'Tanda dikosongkan',
+    cite: `Panduan yang diterbitkan menekankan tempoh kering selepas pucuk daun (<a href="${CABI_DURIAN}">CABI: Durio zibethinus</a>). Pendekatan ini menggunakan isyarat semula jadi itu, tanpa pengawal atur tumbesaran. Tanda hanya disimpan dalam telefon ini.`
+  },
+  sources: { eyebrow: 'Rujukan', h2: 'Sumber', lede: 'Setiap DOI telah disemak dengan daftar Crossref. Crider 1955 tiada DOI. Rujukan disenaraikan dalam bahasa asalnya (Inggeris).', noDoi: 'Tiada DOI.' },
+  onboard: {
+    slides: [
+      { t: 'Potong, jangan sembur', d: 'Pemotongan berkala mengekalkan akar hidup. Akar hidup memberi makan tanah sepanjang tahun; akar yang disembur hanya sekali.' },
+      { t: 'Akar membina tanah', d: 'Akar mati dan hidup menambah bahan organik, membuka liang untuk udara dan air, dan mengikat tanah liat menjadi gumpalan.' },
+      { t: 'Dua musim untuk durian', d: 'Bina tanah hampir sepanjang tahun, kemudian biarkan zon akar kering dan panas sebelum berbunga. Tab Durian ada senarai semak untuk setiap musim.' }
+    ],
+    tip: 'Petua: pasang aplikasi ini supaya boleh dibaca tanpa internet di dusun.',
+    next: 'Seterusnya', start: 'Mula membaca', skip: 'Langkau', back: 'Kembali'
+  }
+}
+};

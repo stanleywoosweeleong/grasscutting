@@ -6,6 +6,7 @@ const CACHE = 'cut-leave';
 const SHELL = [
   './',
   './index.html',
+  './content.js',
   './manifest.webmanifest',
   './icons/icon-192.png',
   './icons/icon-512.png',
