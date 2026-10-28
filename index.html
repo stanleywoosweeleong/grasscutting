@@ -95,17 +95,18 @@ main{padding-top:calc(var(--topbar) + env(safe-area-inset-top,0px));
 .stack{display:flex;flex-direction:column;gap:16px}
 
 /* Learn accordion */
-details.sec{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-details.sec > summary{list-style:none;cursor:pointer;padding:16px;display:grid;grid-template-columns:2rem minmax(0,1fr) 1rem;gap:10px;align-items:start}
-details.sec > summary::-webkit-details-marker{display:none}
-details.sec > summary .head{display:flex;flex-direction:column;gap:4px;min-width:0}
-details.sec > summary h3{font-size:1.1rem}
-details.sec > summary .take{color:var(--muted);font-size:.93rem}
-details.sec[open] > summary .take{color:var(--ink)}
-details.sec > summary .n,details.sec > summary .chev{line-height:1.5}
-details.sec > summary .n{font-family:var(--f-display);color:var(--mono)}
-details.sec > summary .chev{transition:transform .2s;color:var(--muted)}
-details.sec[open] > summary .chev{transform:rotate(90deg)}
+.sec{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.sec-h{margin:0;font:inherit}
+.sec-head{width:100%;border:0;background:transparent;color:inherit;text-align:left;cursor:pointer;padding:16px;
+  display:grid;grid-template-columns:2rem minmax(0,1fr) 1rem;gap:10px;align-items:start}
+.sec-head .head{display:flex;flex-direction:column;gap:4px;min-width:0}
+.sec-head .t{font-family:var(--f-display);font-size:1.1rem;line-height:1.2;text-wrap:balance}
+.sec-head .take{color:var(--muted);font-size:.93rem;font-weight:400}
+.sec.open .sec-head .take{color:var(--ink)}
+.sec-head .n,.sec-head .chev{line-height:1.5}
+.sec-head .n{font-family:var(--f-display);color:var(--mono)}
+.sec-head .chev{transition:transform .2s;color:var(--muted)}
+.sec.open .sec-head .chev{transform:rotate(90deg)}
 .body{padding:0 16px 18px;display:flex;flex-direction:column;gap:12px}
 .body ul,.body ol{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px}
 .cite{font-size:.86rem;color:var(--muted)}
@@ -162,12 +163,12 @@ details.sec[open] > summary .chev{transform:rotate(90deg)}
 .fig .crack path{stroke:var(--soil-dark);stroke-width:1.6}
 
 /* Section card: its main diagram shows before the section is opened */
-details.sec > summary .hero{grid-column:1/-1}
-details.sec > summary .hero .fig svg{background:var(--bg)}
-.fig,.ph{position:relative;cursor:zoom-in}
+.sec > .hero{padding:0 16px 16px}
+.sec > .hero .fig svg{background:var(--bg)}
+.zoomable{position:relative;display:block;cursor:zoom-in;border-radius:10px}
 .zoomhint{position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;background:rgb(0 0 0 / .45);display:grid;place-items:center;pointer-events:none}
 .zoomhint svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round}
-.fig:focus-visible,.ph:focus-visible{outline:2px solid var(--mono);outline-offset:3px;border-radius:10px}
+.zoomable:focus-visible{outline:2px solid var(--mono);outline-offset:3px}
 .fig .blade{fill:var(--mono)} .fig .vein path{stroke:var(--surface);stroke-width:1.1;opacity:.8}
 .fig .nodule circle{fill:#d9849a;stroke:var(--ink);stroke-width:.8}
 .fig .arrow-n{stroke:var(--mono)} .fig .arrow-s{stroke:var(--sun)} .fig .ahead{fill:var(--muted)}
@@ -448,7 +449,7 @@ function render(){
   document.title=L.appName;
   $('#appName').textContent=L.appName;
   $('#setBtn').setAttribute('aria-label',L.settings.open);
-  $('#setClose').setAttribute('aria-label',L.viewer.close);$('#shareClose').setAttribute('aria-label',L.viewer.close);
+  $('#setClose').setAttribute('aria-label',L.viewer.close);$('#tipClose').setAttribute('aria-label',L.viewer.close);$('#shareClose').setAttribute('aria-label',L.viewer.close);
   document.querySelectorAll('#sizeSeg [data-size]').forEach(b=>b.setAttribute('aria-label',L.settings.sizes[b.dataset.size]));
   syncPrefs();
   $('#offline').textContent=L.offline;
@@ -460,13 +461,15 @@ function render(){
   document.querySelectorAll('[data-t]').forEach(e=>e.textContent=get(L,e.dataset.t));
   document.querySelectorAll('[data-h]').forEach(e=>e.innerHTML=get(L,e.dataset.h));
 
-  const open=[...document.querySelectorAll('details.sec[open]')].map(d=>d.id);
+  const open=[...document.querySelectorAll('.sec.open')].map(d=>d.id);
   $('#secList').innerHTML=L.sections.map((s,i)=>{
     const id='s'+(i+1), c=CITES[id];
     const cite=c.map(([n,d])=>d?`<a href="https://doi.org/${d}" target="_blank" rel="noopener">${n}</a>`:n).join(' · ');
-    return `<details class="sec" id="${id}"${open.includes(id)?' open':''}>
-      <summary><span class="n">${i+1}</span><span class="head"><h3>${s.t}</h3><span class="take">${s.take}</span></span><span class="chev" aria-hidden="true">›</span>${hero(id)?`<div class="hero">${figure(hero(id))}</div>`:''}</summary>
-      <div class="body">${block(s.b[0])}${media(id)}${s.b.slice(1).map(block).join('')}<p class="cite">${c.length>1?L.sourceMany:L.sourceOne} ${cite}</p><button class="sec-close" type="button" data-close="${id}"><span aria-hidden="true">⌃</span> ${L.closeSection}</button></div></details>`;
+    const o=open.includes(id);
+    return `<article class="sec${o?' open':''}" id="${id}">
+      <h3 class="sec-h"><button class="sec-head" type="button" aria-expanded="${o}" aria-controls="${id}-body"><span class="n">${i+1}</span><span class="head"><span class="t">${s.t}</span><span class="take">${s.take}</span></span><span class="chev" aria-hidden="true">›</span></button></h3>
+      ${hero(id)?`<div class="hero">${figure(hero(id))}</div>`:''}
+      <div class="body" id="${id}-body"${o?'':' hidden'}>${block(s.b[0])}${media(id)}${s.b.slice(1).map(block).join('')}<p class="cite">${c.length>1?L.sourceMany:L.sourceOne} ${cite}</p><button class="sec-close" type="button" data-close="${id}"><span aria-hidden="true">⌃</span> ${L.closeSection}</button></div></article>`;
   }).join('');
 
   const ticks=store.get('ticks',{});
@@ -499,11 +502,11 @@ function render(){
 function figure(id){
   const L=T[lang];
   let pic='';try{pic=FIGS[id]({...L.fig[id], ...(id==='fd'?{normal:L.durian.normal,induction:L.durian.induction}:{})})}catch(e){console.warn('figure',id,e);return ''}
-  return `<figure class="fig" data-zoom tabindex="0" role="button" aria-label="${L.viewer.open}"><span class="zoomhint" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>${pic}${ILLUSTRATIVE.includes(id)?`<figcaption>${L.fig.illus}</figcaption>`:''}</figure>`;
+  return `<figure class="fig"><div class="zoomable" data-zoom tabindex="0" role="button" aria-label="${L.viewer.open}"><span class="zoomhint" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>${pic}</div>${ILLUSTRATIVE.includes(id)?`<figcaption>${L.fig.illus}</figcaption>`:''}</figure>`;
 }
 function photo(key,cls=''){
   const L=T[lang], p=PHOTOS[key];
-  return `<figure class="ph ${cls}" data-zoom tabindex="0" role="button" aria-label="${L.viewer.open}: ${L.photo[key]}"><span class="zoomhint" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span><img src="${p.file}" alt="${L.photo[key]}" loading="lazy" decoding="async"><figcaption>${L.photo[key]} · ${L.photo.credit} <a href="${p.page}" target="_blank" rel="noopener">${p.author}</a>, ${p.license}</figcaption></figure>`;
+  return `<figure class="ph ${cls}"><div class="zoomable" data-zoom tabindex="0" role="button" aria-label="${L.viewer.open}: ${L.photo[key]}"><span class="zoomhint" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span><img src="${p.file}" alt="${L.photo[key]}" loading="lazy" decoding="async"></div><figcaption>${L.photo[key]} · ${L.photo.credit} <a href="${p.page}" target="_blank" rel="noopener">${p.author}</a>, ${p.license}</figcaption></figure>`;
 }
 function hero(id){const m=(MEDIA[id]||[]).find(x=>x.startsWith('fig:'));return m?m.slice(4):null}
 function media(id){
@@ -523,13 +526,23 @@ function block([type,v]){
 }
 function setLang(l){lang=l;store.set('lang',l);render()}
 
+// ---------- open and close sections ----------
+function setSection(d,open){
+  d.classList.toggle('open',open);
+  d.querySelector('.sec-head').setAttribute('aria-expanded',open);
+  d.querySelector('.body').hidden=!open;
+}
+document.addEventListener('click',e=>{
+  const head=e.target.closest('.sec-head'); if(!head) return;
+  const d=head.closest('.sec'); setSection(d,!d.classList.contains('open'));
+});
 // ---------- close a section from its bottom ----------
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-close]'); if(!b) return;
-  const d=document.getElementById(b.dataset.close); d.open=false;
+  const d=document.getElementById(b.dataset.close); setSection(d,false);
   const y=d.getBoundingClientRect().top+scrollY-(document.querySelector('.top').offsetHeight+12);
   if(d.getBoundingClientRect().top<document.querySelector('.top').offsetHeight) window.scrollTo(0,y);
-  d.querySelector('summary').focus({preventScroll:true});
+  d.querySelector('.sec-head').focus({preventScroll:true});
 });
 
 // ---------- tabs ----------
@@ -622,10 +635,10 @@ addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#shareSheet').hidden)clo
 let lastFig=null;
 function openViewer(fig){
   lastFig=fig;
-  const img=fig.querySelector('img'), pic=fig.querySelector(':scope > svg');
+  const img=fig.querySelector('img'), pic=fig.querySelector(':scope > svg'), box=fig.closest('figure')||fig;
   $('#vStage').innerHTML=img?`<img src="${img.getAttribute('src')}" alt="${img.alt}">`:`<div class="fig v-fig">${pic.outerHTML}</div>`;
   $('#vStage').classList.remove('zoomed');
-  $('#vCap').textContent=(fig.querySelector('figcaption')||{}).textContent||pic.getAttribute('aria-label')||'';
+  $('#vCap').textContent=(box.querySelector('figcaption')||{}).textContent||pic.getAttribute('aria-label')||'';
   $('#viewer').setAttribute('aria-label',$('#vCap').textContent);
   $('#viewer').hidden=false;
   history.pushState({viewer:1},'');
@@ -672,7 +685,7 @@ addEventListener('appinstalled',()=>{$('#installBtn').classList.remove('show');t
 
 // ---------- start ----------
 render(); setSeason(store.get('season','normal')); net(); route();
-if(!store.get('seenLearn',false)){const s1=document.getElementById('s1'); if(s1) s1.open=true; store.set('seenLearn',true)}
+if(!store.get('seenLearn',false)){const s1=document.getElementById('s1'); if(s1) setSection(s1,true); store.set('seenLearn',true)}
 if(!store.get('onboarded',false)) startOnboarding();
 
 // Service worker (network-first, so content updates need no version bump)
