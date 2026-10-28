@@ -198,6 +198,13 @@ details.sec > summary .hero .fig svg{background:var(--bg)}
 .refs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;border-top:1px solid var(--line)}
 .refs li{padding:12px 0;border-bottom:1px solid var(--line);font-size:.93rem}
 .refs a{word-break:break-all}
+.refs li{display:flex;flex-direction:column;gap:6px}
+.ref-t{color:var(--muted);font-size:.86rem}
+.ref-f{color:var(--ink);font-size:.95rem}
+.ref-b{display:flex;flex-wrap:wrap;gap:6px}
+.ref-b span,.ref-b a{font-size:.75rem;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted);text-decoration:none;word-break:normal}
+.ref-b .badge-f{border-color:var(--mono);color:var(--mono);font-weight:700}
+.ref-b .badge-c{background:var(--surface)}
 
 /* Tab bar */
 .tabs{position:fixed;inset:auto 0 0;z-index:20;background:var(--surface);border-top:1px solid var(--line);
@@ -290,6 +297,7 @@ details.sec > summary .hero .fig svg{background:var(--bg)}
   <span class="eyebrow" data-t="sources.eyebrow"></span>
   <h2 id="h-sources" data-t="sources.h2"></h2>
   <p class="lede" data-t="sources.lede"></p>
+  <p class="cite" id="refNote"></p>
   <ul class="refs" id="refList"></ul>
   <h3 data-t="photo.heading" style="margin-top:12px"></h3>
   <p class="lede" data-t="photo.lede"></p>
@@ -376,7 +384,14 @@ function render(){
   $('#vClose').setAttribute('aria-label',L.viewer.close);
   $('#vHint').textContent=L.viewer.hint;
   $('#photoCredits').innerHTML=Object.entries(PHOTOS).map(([k,p])=>`<li>${L.photo[k]}: <a href="${p.page}" target="_blank" rel="noopener">${p.author}</a>, ${p.license}</li>`).join('');
-  $('#refList').innerHTML=REFS.map(([t,d])=>`<li lang="en">${t}${d?` <a href="https://doi.org/${d}" target="_blank" rel="noopener">doi:${d}</a>`:' '+L.sources.noDoi}</li>`).join('');
+  $('#refList').innerHTML=REFS.map(([t,d])=>{
+    const k=d||'crider', m=REFMETA[k]||{}, R=L.refs;
+    const badges=[m.cited!=null&&m.cited>0?`<span class="badge-c">${R.cited.replace('{n}',m.cited.toLocaleString(L.htmlLang))}</span>`:'',
+      m.free?`<a class="badge-f" href="${m.free}" target="_blank" rel="noopener">${R.free}</a>`:'',
+      m.basis?`<span class="badge-b">${R.basis[m.basis]}</span>`:''].filter(Boolean).join('');
+    return `<li><span lang="en" class="ref-t">${t}${d?` <a href="https://doi.org/${d}" target="_blank" rel="noopener">doi:${d}</a>`:' '+L.sources.noDoi}</span>${R.findings[k]?`<span class="ref-f">${R.findings[k]}</span>`:''}<span class="ref-b">${badges}</span></li>`;
+  }).join('');
+  $('#refNote').textContent=L.refs.note;
   $('#langList').innerHTML=LANGS.map(k=>`<button type="button" data-lang="${k}" lang="${T[k].htmlLang}" aria-pressed="${k===lang}">${T[k].native}<span>${T[k].code}</span></button>`).join('');
 }
 function figure(id){
