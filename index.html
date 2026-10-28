@@ -113,6 +113,10 @@ details.sec[open] > summary .chev{transform:rotate(90deg)}
 .note{background:var(--warn-soft);border-radius:10px;padding:12px 14px;font-size:.95rem}
 .note b{color:var(--warn)}
 
+.sec-close{align-self:center;display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);background:var(--bg);color:var(--ink);
+  border-radius:999px;padding:8px 18px;font-weight:700;cursor:pointer;margin-top:4px}
+.sec-close span{font-size:1.1rem;line-height:1;transform:translateY(3px)}
+
 /* Diagrams and photos */
 .fig,.ph{margin:0;display:flex;flex-direction:column;gap:6px}
 .fig svg{width:100%;height:auto;display:block;background:var(--bg);border-radius:10px}
@@ -462,7 +466,7 @@ function render(){
     const cite=c.map(([n,d])=>d?`<a href="https://doi.org/${d}" target="_blank" rel="noopener">${n}</a>`:n).join(' · ');
     return `<details class="sec" id="${id}"${open.includes(id)?' open':''}>
       <summary><span class="n">${i+1}</span><span class="head"><h3>${s.t}</h3><span class="take">${s.take}</span></span><span class="chev" aria-hidden="true">›</span>${hero(id)?`<div class="hero">${figure(hero(id))}</div>`:''}</summary>
-      <div class="body">${block(s.b[0])}${media(id)}${s.b.slice(1).map(block).join('')}<p class="cite">${c.length>1?L.sourceMany:L.sourceOne} ${cite}</p></div></details>`;
+      <div class="body">${block(s.b[0])}${media(id)}${s.b.slice(1).map(block).join('')}<p class="cite">${c.length>1?L.sourceMany:L.sourceOne} ${cite}</p><button class="sec-close" type="button" data-close="${id}"><span aria-hidden="true">⌃</span> ${L.closeSection}</button></div></details>`;
   }).join('');
 
   const ticks=store.get('ticks',{});
@@ -518,6 +522,15 @@ function block([type,v]){
   return '';
 }
 function setLang(l){lang=l;store.set('lang',l);render()}
+
+// ---------- close a section from its bottom ----------
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-close]'); if(!b) return;
+  const d=document.getElementById(b.dataset.close); d.open=false;
+  const y=d.getBoundingClientRect().top+scrollY-(document.querySelector('.top').offsetHeight+12);
+  if(d.getBoundingClientRect().top<document.querySelector('.top').offsetHeight) window.scrollTo(0,y);
+  d.querySelector('summary').focus({preventScroll:true});
+});
 
 // ---------- tabs ----------
 const VIEWS=['learn','durian','sources'];
@@ -659,6 +672,7 @@ addEventListener('appinstalled',()=>{$('#installBtn').classList.remove('show');t
 
 // ---------- start ----------
 render(); setSeason(store.get('season','normal')); net(); route();
+if(!store.get('seenLearn',false)){const s1=document.getElementById('s1'); if(s1) s1.open=true; store.set('seenLearn',true)}
 if(!store.get('onboarded',false)) startOnboarding();
 
 // Service worker (network-first, so content updates need no version bump)
