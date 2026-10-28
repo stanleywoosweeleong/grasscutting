@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Cut &amp; Leave</title>
+<title>割草养土 Grass Cutting</title>
 <meta name="description" content="The science of building orchard soil by cutting grass instead of spraying it, written for durian growers.">
 <meta name="theme-color" content="#24432f" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#121a15" media="(prefers-color-scheme: dark)">
@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Cut & Leave">
+<meta name="apple-mobile-web-app-title" content="割草养土">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
@@ -51,7 +51,8 @@ button{font:inherit;color:inherit}
   padding-top:env(safe-area-inset-top,0px);
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .top-in{height:var(--topbar);display:flex;align-items:center;gap:12px;max-width:720px;margin:0 auto}
-.top h1{font-size:1.3rem;flex:1}
+.top h1{font-size:1.3rem;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top h1 .en{font-size:.8em;opacity:.8;margin-left:4px}
 .install{display:none;border:1px solid color-mix(in srgb,var(--bar-ink) 40%,transparent);background:transparent;color:var(--bar-ink);
   border-radius:999px;padding:6px 14px;font-size:.88rem;cursor:pointer}
 .install.show{display:inline-block}
@@ -132,7 +133,7 @@ details.sec[open] > summary .chev{transform:rotate(90deg)}
 
 <header class="top">
   <div class="top-in">
-    <h1>Cut &amp; Leave</h1>
+    <h1>割草养土 <span class="en">Grass Cutting</span></h1>
     <span class="offline" id="offline" hidden>Offline</span>
     <button class="install" id="installBtn" type="button">Install</button>
   </div>

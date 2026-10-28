@@ -1,4 +1,4 @@
-# Cut & Leave
+# 割草养土 Grass Cutting
 
 A small offline-capable web app (PWA) on building orchard soil by cutting grass instead of spraying it, written for durian growers.
 
