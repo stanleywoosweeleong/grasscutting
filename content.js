@@ -9,7 +9,8 @@ const CITES = {
   s5: [['Rasse et al. 2005', '10.1007/s11104-004-0907-y'], ['Sokol & Bradford 2019', '10.1038/s41561-018-0258-6'], ['Cresswell & Kirkegaard 1995', '10.1071/SR9950221'], ['Tisdall & Oades 1982', '10.1111/j.1365-2389.1982.tb01755.x'], ['Rillig 2004', '10.4141/S04-003'], ['Crider 1955 (USDA Tech. Bull. 1102)', null]],
   s6: [['Sokol & Bradford 2019', '10.1038/s41561-018-0258-6']],
   s7: [['CABI', '10.1079/cabicompendium.8094'], ['Grime 1973', '10.1038/242344a0'], ['Connell 1978', '10.1126/science.199.4335.1302'], ['Chollet et al. 2018', '10.1016/j.landurbplan.2018.08.009']],
-  s8: [['Kopp & Guillard 2002', '10.2135/cropsci2002.1225'], ['Harivandi & Gibeault 1999', '10.3733/ucanr.8006']]
+  s8: [['Harivandi & Gibeault 1999', '10.3733/ucanr.8006'], ['Crider 1955 (USDA Tech. Bull. 1102)', null]],
+  s9: [['Kopp & Guillard 2002', '10.2135/cropsci2002.1225'], ['Harivandi & Gibeault 1999', '10.3733/ucanr.8006']]
 };
 
 const REFS = [
@@ -137,6 +138,23 @@ en: {
         ]],
         ['p', 'A uniform cow-grass mat is easy, covers soil well and grows slowly. A mixed sward has roots at more depths and more soil life.']
       ] },
+    { t: 'When to cut, and how high',
+      take: 'Take off no more than a third of the leaf at a time, and adjust how often you cut to the season.',
+      b: [
+        ['p', 'Research on lawns and turf such as golf courses gives one firm rule: <b>never remove more than about a third of the leaf height in one cut.</b> It was worked out for turf, not orchards, but the reason behind it applies to any grass: taking more stops root growth for a while, which is the opposite of what builds soil.'],
+        ['ul', [
+          '<b>How to use it:</b> pick the height you want to leave, then cut when the grass reaches about 1.5 times that. To leave 10 cm, cut at about 15 cm.',
+          '<b>If it has grown too tall,</b> bring it down in two cuts a couple of weeks apart, not all at once.'
+        ]],
+        ['p', 'How often to cut depends on the season and what you want the grass to do:'],
+        ['ul', [
+          "<b>Most of the year:</b> cut by thirds and don't scalp. More leaf means more energy for the roots.",
+          "<b>Dry season:</b> tall grass shades the soil but also draws water from the same soil your trees use. A moderate height with clippings left as mulch usually saves more moisture. Grass grows slowly in drought, so cut less often, and don't cut grass that is already browning.",
+          '<b>Wet season:</b> grass grows fast, so cut more often to keep access easy. Keep the area around trunks short and airy; damp, crowded trunks favour root and stem diseases.',
+          '<b>Before flower induction:</b> cut short under the canopy (see the <a href="#durian">Durian</a> tab).'
+        ]],
+        ['note', '<b>How sure is this?</b> The one-third rule is well established for lawns and golf-course turf. No published cutting height for durian orchards was found, so the seasonal advice applies the same science rather than a tested recommendation.']
+      ] },
     { t: 'Putting it into practice',
       take: 'Leave clippings, cut high and reduce fertilizer step by step.',
       b: [
@@ -161,7 +179,7 @@ en: {
     normalTitle: 'Most of the year: build soil',
     normalItems: [
       ['n1', 'Cut every few months; never pull or dig'],
-      ['n2', 'Cut high, about 10–15 cm'],
+      ['n2', 'Cut when grass reaches about 1.5× the height you leave (e.g. 15 cm down to 10 cm); never take more than a third'],
       ['n3', 'Leave clippings; rake surplus into tree rings'],
       ['n4', 'Cut unwanted species before they set seed'],
       ['n5', 'Reduce fertilizer a step and watch the grass']
@@ -282,6 +300,23 @@ zh: {
         ]],
         ['p', '清一色的地毯草省事、覆盖好、长得慢。混杂的草地则有不同深度的根，土壤生物也更多。']
       ] },
+    { t: '什么时候割、割多高',
+      take: '每次最多割掉叶子的三分之一；割草的频率随季节调整。',
+      b: [
+        ['p', '针对草坪和高尔夫球场等草地的研究，有一条明确的原则：<b>每次割草，最多只割掉叶片高度的三分之一左右。</b>这条原则是为草坪而不是果园总结出来的，但背后的道理适用于所有草：割得更多，根会暂停生长一段时间，这正好与养土背道而驰。'],
+        ['ul', [
+          '<b>怎么用：</b>先定好想留的高度，等草长到这个高度的约 1.5 倍再割。想留 10 厘米，就在约 15 厘米时割。',
+          '<b>如果草已经长得太高，</b>分两次割低，中间隔一两个星期，不要一次割完。'
+        ]],
+        ['p', '多久割一次，要看季节，以及你想让草发挥什么作用：'],
+        ['ul', [
+          '<b>一年中大部分时间：</b>按三分之一来割，不要剃得太低。叶子越多，输送给根的能量就越多。',
+          '<b>旱季：</b>高草能遮住地面，但也会从果树用的同一片土里吸水。保持中等高度、把草屑留作覆盖，通常更能保住水分。干旱时草长得慢，所以少割一些，已经枯黄的草不要割。',
+          '<b>雨季：</b>草长得快，要割得勤一些，方便进出。树干周围要保持矮而通风；潮湿、拥挤的树干容易引发根部和茎部病害。',
+          '<b>催花前：</b>把树冠下的草割短（见<a href="#durian">榴莲</a>页）。'
+        ]],
+        ['note', '<b>有多可靠？</b>三分之一原则在草坪和高尔夫球场的研究中已很成熟。目前没有找到针对榴莲园的割草高度研究，所以季节建议是根据同样的科学推论出来的，并非经过试验的推荐。']
+      ] },
     { t: '实际做法',
       take: '留下草屑、割高一点、逐步减少肥料。',
       b: [
@@ -306,7 +341,7 @@ zh: {
     normalTitle: '一年中大部分时间：养土',
     normalItems: [
       ['n1', '每隔几个月割一次草；绝不拔草或挖草'],
-      ['n2', '割高一点，约 10–15 厘米'],
+      ['n2', '草长到想留高度的约 1.5 倍再割（例如 15 厘米割到 10 厘米）；每次不超过三分之一'],
       ['n3', '留下草屑；多余的耙到树盘'],
       ['n4', '在杂草结籽前割掉'],
       ['n5', '减少一点肥料，观察草的状况']
@@ -427,6 +462,23 @@ ms: {
         ]],
         ['p', 'Hamparan cow grass yang seragam mudah dijaga, melitupi tanah dengan baik dan tumbuh perlahan. Rumput campuran mempunyai akar pada lebih banyak kedalaman dan lebih banyak hidupan tanah.']
       ] },
+    { t: 'Bila hendak memotong, dan setinggi mana',
+      take: 'Jangan buang lebih daripada satu pertiga daun sekali potong, dan ubah kekerapan memotong mengikut musim.',
+      b: [
+        ['p', 'Kajian tentang laman rumput dan padang seperti padang golf memberi satu peraturan yang jelas: <b>jangan buang lebih daripada kira-kira satu pertiga ketinggian daun dalam satu potongan.</b> Peraturan ini dibina untuk laman rumput, bukan dusun, tetapi sebab di sebaliknya terpakai untuk semua rumput: memotong lebih banyak menghentikan pertumbuhan akar buat seketika, iaitu bertentangan dengan usaha membina tanah.'],
+        ['ul', [
+          '<b>Cara menggunakannya:</b> pilih ketinggian yang hendak ditinggalkan, kemudian potong apabila rumput mencapai kira-kira 1.5 kali ketinggian itu. Untuk meninggalkan 10 cm, potong pada kira-kira 15 cm.',
+          '<b>Jika rumput sudah terlalu tinggi,</b> rendahkan dalam dua kali potongan dengan selang satu atau dua minggu, bukan sekali gus.'
+        ]],
+        ['p', 'Kekerapan memotong bergantung pada musim dan peranan yang anda mahu rumput mainkan:'],
+        ['ul', [
+          '<b>Sepanjang tahun:</b> potong ikut satu pertiga dan jangan potong terlalu rendah. Lebih banyak daun bermakna lebih banyak tenaga untuk akar.',
+          '<b>Musim kemarau:</b> rumput tinggi meneduhkan tanah tetapi juga menyedut air daripada tanah yang sama digunakan oleh pokok. Ketinggian sederhana dengan keratan ditinggalkan sebagai sungkupan biasanya lebih menjimatkan kelembapan. Rumput tumbuh perlahan semasa kemarau, jadi kurangkan kekerapan memotong, dan jangan potong rumput yang sudah menguning.',
+          '<b>Musim hujan:</b> rumput tumbuh cepat, jadi potong lebih kerap supaya mudah keluar masuk. Pastikan kawasan sekeliling batang pokok rendah dan berudara; batang yang lembap dan sesak menggalakkan penyakit akar dan batang.',
+          '<b>Sebelum aruhan bunga:</b> potong pendek di bawah kanopi (lihat tab <a href="#durian">Durian</a>).'
+        ]],
+        ['note', '<b>Sejauh mana pasti?</b> Peraturan satu pertiga sudah mantap dalam kajian laman rumput dan padang golf. Tiada kajian tentang ketinggian memotong khusus untuk dusun durian ditemui, jadi nasihat bermusim ini menggunakan sains yang sama, bukan cadangan yang telah diuji.']
+      ] },
     { t: 'Mempraktikkannya',
       take: 'Tinggalkan keratan rumput, potong tinggi dan kurangkan baja secara berperingkat.',
       b: [
@@ -451,7 +503,7 @@ ms: {
     normalTitle: 'Sepanjang tahun: bina tanah',
     normalItems: [
       ['n1', 'Potong setiap beberapa bulan; jangan sekali-kali cabut atau gali'],
-      ['n2', 'Potong tinggi, kira-kira 10–15 cm'],
+      ['n2', 'Potong apabila rumput mencapai kira-kira 1.5 kali ketinggian yang ditinggalkan (cth. 15 cm ke 10 cm); jangan buang lebih daripada satu pertiga'],
       ['n3', 'Tinggalkan keratan; sapukan lebihan ke bulatan pokok'],
       ['n4', 'Potong rumpai sebelum ia berbiji'],
       ['n5', 'Kurangkan baja sedikit dan perhatikan rumput']
