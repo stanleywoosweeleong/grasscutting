@@ -154,15 +154,8 @@ details.sec[open] > summary .chev{transform:rotate(90deg)}
 .ob-pick{display:flex;flex-direction:column;gap:4px;text-align:center;margin-top:8px}
 .ob-pick h2{font-size:1.45rem;line-height:1.35}
 .ob-pick h2 + h2{color:var(--muted);font-size:1.15rem}
-.ob-art{align-self:center;width:136px;height:136px;border-radius:50%;background:var(--mono-soft);color:var(--mono);display:grid;place-items:center;margin-top:8px}
-.ob-art svg{width:68px;height:68px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
-.ob-body{display:flex;flex-direction:column;gap:12px;text-align:center;align-items:center}
-.ob-body h2{font-size:1.7rem}
-.ob-body p{color:var(--muted);font-size:1.05rem;max-width:34ch}
-.ob-body .ob-tip{color:var(--ink);font-size:.92rem;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
-.dots{display:flex;gap:6px;justify-content:center}
-.dots i{width:8px;height:8px;border-radius:4px;background:var(--line)}
-.dots i.on{background:var(--mono);width:20px}
+.tip{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:start;background:var(--mono-soft);border-radius:12px;padding:12px 8px 12px 14px;font-size:.93rem}
+.tip button{border:0;background:transparent;color:var(--muted);font-size:1.3rem;line-height:1;padding:2px 8px;cursor:pointer}
 .ob-actions{margin-top:auto;display:flex;flex-direction:column;gap:10px}
 
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tabbar) + env(safe-area-inset-bottom,0px) + 14px);
@@ -186,6 +179,7 @@ details.sec[open] > summary .chev{transform:rotate(90deg)}
   <span class="eyebrow" data-t="learn.eyebrow"></span>
   <h2 id="h-learn" data-t="learn.h2"></h2>
   <p class="lede" data-t="learn.lede"></p>
+  <div class="tip" id="tip" hidden><p data-h="tip.text"></p><button type="button" id="tipClose">×</button></div>
   <div class="stack" id="secList"></div>
 </section>
 
@@ -230,7 +224,6 @@ details.sec[open] > summary .chev{transform:rotate(90deg)}
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="langTitle">
     <h2 id="langTitle" data-t="langMenu.title"></h2>
     <div class="langs" id="langList"></div>
-    <button class="linkbtn" type="button" id="introAgain" data-t="langMenu.intro" style="align-self:flex-start"></button>
     <button class="primary" type="button" id="langDone" data-t="langMenu.done"></button>
   </div>
 </div>
@@ -247,11 +240,6 @@ const $=s=>document.querySelector(s);
 const store={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch{return d}},
              set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
 const LANGS=['zh','en','ms'];
-const ART=[
-  '<svg viewBox="0 0 24 24"><path d="M3 20h18"/><path d="M7 20c0-5 1-9 3-12M12 20c0-6 0-10 1-14M17 20c0-4-1-8-3-11"/><path d="M4 13h16" stroke-dasharray="2 2"/></svg>',
-  '<svg viewBox="0 0 24 24"><path d="M3 8h18"/><path d="M12 3v5M12 8c0 3-3 5-3 9M12 8c0 3 3 5 3 9M12 8v12M10 12l-4 2M14 12l4 2M9 17l-3 2M15 17l3 2"/></svg>',
-  '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M12 7.5a4.5 4.5 0 0 1 0 9"/></svg>'
-];
 const get=(obj,path)=>path.split('.').reduce((o,k)=>o&&o[k],obj);
 function guessLang(){const n=(navigator.language||'en').toLowerCase();return n.startsWith('zh')?'zh':(n.startsWith('ms')||n.startsWith('id'))?'ms':'en'}
 let lang=store.get('lang',null);
@@ -268,6 +256,7 @@ function render(){
   $('#offline').textContent=L.offline;
   $('#installBtn').textContent=L.install;
   $('#onboard').setAttribute('aria-label',L.appName);
+  $('#tipClose').setAttribute('aria-label',L.tip.close);
   $('.seg').setAttribute('aria-label',L.durian.normal+' / '+L.durian.induction);
   $('.tabs').setAttribute('aria-label',[L.tabs.learn,L.tabs.durian,L.tabs.sources].join(', '));
   document.querySelectorAll('[data-t]').forEach(e=>e.textContent=get(L,e.dataset.t));
@@ -331,34 +320,23 @@ $('#langBtn').addEventListener('click',openSheet);
 $('#langDone').addEventListener('click',closeSheet);
 $('#langSheet').addEventListener('click',e=>{if(e.target.id==='langSheet')closeSheet()});
 $('#langList').addEventListener('click',e=>{const b=e.target.closest('[data-lang]');if(b){setLang(b.dataset.lang);$(`#langList [data-lang="${b.dataset.lang}"]`).focus()}});
-$('#introAgain').addEventListener('click',()=>{$('#langSheet').hidden=true;startOnboarding(0)});
 addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#langSheet').hidden)closeSheet()});
 
-// ---------- onboarding: pick a language, then three short slides ----------
-let step=0;
-function startOnboarding(s){step=s;$('#onboard').hidden=false;drawOnboarding()}
-function finishOnboarding(){store.set('onboarded',true);$('#onboard').hidden=true;location.hash='learn';route()}
-function drawOnboarding(){
-  const box=$('#obIn');
-  if(step===0){
-    box.innerHTML=`<div class="ob-top"><img src="icons/icon-192.png" alt=""></div>
-      <div class="ob-pick"><h2 lang="zh-Hans">选择语言</h2><h2 lang="en">Choose your language</h2><h2 lang="ms">Pilih bahasa</h2></div>
-      <div class="langs ob-actions">${LANGS.map(k=>`<button type="button" data-lang="${k}" lang="${T[k].htmlLang}" aria-pressed="${k===lang}">${T[k].native}<span>${T[k].code}</span></button>`).join('')}</div>`;
-    box.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>{setLang(b.dataset.lang);step=1;drawOnboarding()}));
-    box.querySelector('[aria-pressed="true"]')?.focus();
-    return;
-  }
-  const O=T[lang].onboard, i=step-1, last=i===O.slides.length-1, sl=O.slides[i];
-  box.innerHTML=`<div class="ob-top"><button class="linkbtn" type="button" id="obBack">${O.back}</button>${last?'':`<button class="linkbtn" type="button" id="obSkip">${O.skip}</button>`}</div>
-    <div class="ob-art" aria-hidden="true">${ART[i]}</div>
-    <div class="ob-body"><h2>${sl.t}</h2><p>${sl.d}</p>${last?`<p class="ob-tip">${O.tip}</p>`:''}</div>
-    <div class="dots" aria-hidden="true">${O.slides.map((_,j)=>`<i class="${j===i?'on':''}"></i>`).join('')}</div>
-    <div class="ob-actions"><button class="primary" type="button" id="obNext">${last?O.start:O.next}</button></div>`;
-  $('#obBack').addEventListener('click',()=>{step--;drawOnboarding()});
-  $('#obSkip')?.addEventListener('click',finishOnboarding);
-  $('#obNext').addEventListener('click',()=>{if(last)finishOnboarding();else{step++;drawOnboarding()}});
-  $('#obNext').focus();
+// ---------- first run: one tap to pick a language, then straight to the content ----------
+function startOnboarding(){
+  $('#onboard').hidden=false;
+  $('#obIn').innerHTML=`<div class="ob-top"><img src="icons/icon-192.png" alt=""></div>
+    <div class="ob-pick"><h2 lang="zh-Hans">选择语言</h2><h2 lang="en">Choose your language</h2><h2 lang="ms">Pilih bahasa</h2></div>
+    <div class="langs ob-actions">${LANGS.map(k=>`<button type="button" data-lang="${k}" lang="${T[k].htmlLang}" aria-pressed="${k===lang}">${T[k].native}<span>${T[k].code}</span></button>`).join('')}</div>`;
+  $('#obIn').querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>{
+    setLang(b.dataset.lang); store.set('onboarded',true); $('#onboard').hidden=true; location.hash='learn'; route();
+  }));
+  $('#obIn [aria-pressed="true"]')?.focus();
 }
+
+// ---------- tip on Learn (until closed) ----------
+$('#tip').hidden=store.get('tipClosed',false);
+$('#tipClose').addEventListener('click',()=>{store.set('tipClosed',true);$('#tip').hidden=true});
 
 // ---------- toast, offline, install ----------
 let tt;function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2200)}
@@ -377,7 +355,7 @@ addEventListener('appinstalled',()=>{$('#installBtn').classList.remove('show');t
 
 // ---------- start ----------
 render(); setSeason(store.get('season','normal')); net(); route();
-if(!store.get('onboarded',false)) startOnboarding(0);
+if(!store.get('onboarded',false)) startOnboarding();
 
 // Service worker (network-first, so content updates need no version bump)
 if('serviceWorker' in navigator){

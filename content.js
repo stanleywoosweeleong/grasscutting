@@ -54,7 +54,7 @@ en: {
   install: 'Install', installed: 'Installed', offline: 'Offline',
   iosHint: 'Tap Share, then Add to Home Screen',
   sourceOne: 'Source:', sourceMany: 'Sources:',
-  langMenu: { title: 'Language', intro: 'Show the introduction again', done: 'Done' },
+  langMenu: { title: 'Language', done: 'Done' },
   learn: {
     eyebrow: 'For durian growers',
     h2: 'Build soil by cutting, not spraying',
@@ -197,15 +197,7 @@ en: {
     cite: `Published guidance emphasises a dry spell after the leaf flush (<a href="${CABI_DURIAN}">CABI: Durio zibethinus</a>). This approach works with that natural signal, with no growth regulators. Ticks are saved on this phone only.`
   },
   sources: { eyebrow: 'References', h2: 'Sources', lede: 'Every DOI was checked against the Crossref registry. Crider 1955 has no DOI.', noDoi: 'No DOI.' },
-  onboard: {
-    slides: [
-      { t: "Cut, don't spray", d: 'Regular cutting keeps roots alive. Living roots feed the soil all year; sprayed roots feed it once.' },
-      { t: 'Roots build the soil', d: 'Dead and living roots add organic matter, open pores for air and water, and glue clay into crumbs.' },
-      { t: 'Two seasons for durian', d: 'Build soil most of the year, then let the root zone dry and warm before flowering. The Durian tab has a checklist for each.' }
-    ],
-    tip: 'Tip: install the app to read it offline in the orchard.',
-    next: 'Next', start: 'Start reading', skip: 'Skip', back: 'Back'
-  }
+  tip: { text: 'Tip: install the app to read it offline in the orchard. The durian checklists are in the <a href="#durian">Durian</a> tab.', close: 'Close tip' }
 },
 
 /* ───────────────────────── 中文 ───────────────────────── */
@@ -216,7 +208,7 @@ zh: {
   install: '安装', installed: '已安装', offline: '离线',
   iosHint: '点“分享”，再点“添加到主屏幕”',
   sourceOne: '来源：', sourceMany: '来源：',
-  langMenu: { title: '语言', intro: '再看一次介绍', done: '完成' },
+  langMenu: { title: '语言', done: '完成' },
   learn: {
     eyebrow: '写给榴莲园主',
     h2: '割草养土，不喷除草剂',
@@ -359,15 +351,7 @@ zh: {
     cite: `已发表的资料强调抽梢后需要一段旱期（<a href="${CABI_DURIAN}">CABI：榴莲</a>）。这个做法顺应这种自然信号，不使用植物生长调节剂。勾选只保存在这部手机上。`
   },
   sources: { eyebrow: '参考文献', h2: '资料来源', lede: '所有 DOI 都已在 Crossref 登记库中核对。Crider 1955 没有 DOI。文献按原文（英文）列出。', noDoi: '无 DOI。' },
-  onboard: {
-    slides: [
-      { t: '割草，不喷药', d: '定期割草让根活着。活根全年喂土；被喷死的根只喂一次。' },
-      { t: '根在养土', d: '死根和活根增加有机质，打开空气和水的通道，把黏土粘成团粒。' },
-      { t: '榴莲的两个季节', d: '一年大部分时间养土，开花前让根区变干变暖。“榴莲”页为每个季节准备了清单。' }
-    ],
-    tip: '提示：安装这个应用，在果园里没网也能看。',
-    next: '下一步', start: '开始阅读', skip: '跳过', back: '返回'
-  }
+  tip: { text: '提示：安装这个应用，在果园没网也能看。榴莲清单在<a href="#durian">榴莲</a>页。', close: '关闭提示' }
 },
 
 /* ───────────────────────── Bahasa Melayu ───────────────────────── */
@@ -378,7 +362,7 @@ ms: {
   install: 'Pasang', installed: 'Dipasang', offline: 'Luar talian',
   iosHint: 'Ketik Kongsi, kemudian Tambah ke Skrin Utama',
   sourceOne: 'Sumber:', sourceMany: 'Sumber:',
-  langMenu: { title: 'Bahasa', intro: 'Tunjukkan pengenalan semula', done: 'Selesai' },
+  langMenu: { title: 'Bahasa', done: 'Selesai' },
   learn: {
     eyebrow: 'Untuk penanam durian',
     h2: 'Bina tanah dengan memotong, bukan menyembur',
@@ -521,14 +505,6 @@ ms: {
     cite: `Panduan yang diterbitkan menekankan tempoh kering selepas pucuk daun (<a href="${CABI_DURIAN}">CABI: Durio zibethinus</a>). Pendekatan ini menggunakan isyarat semula jadi itu, tanpa pengawal atur tumbesaran. Tanda hanya disimpan dalam telefon ini.`
   },
   sources: { eyebrow: 'Rujukan', h2: 'Sumber', lede: 'Setiap DOI telah disemak dengan daftar Crossref. Crider 1955 tiada DOI. Rujukan disenaraikan dalam bahasa asalnya (Inggeris).', noDoi: 'Tiada DOI.' },
-  onboard: {
-    slides: [
-      { t: 'Potong, jangan sembur', d: 'Pemotongan berkala mengekalkan akar hidup. Akar hidup memberi makan tanah sepanjang tahun; akar yang disembur hanya sekali.' },
-      { t: 'Akar membina tanah', d: 'Akar mati dan hidup menambah bahan organik, membuka liang untuk udara dan air, dan mengikat tanah liat menjadi gumpalan.' },
-      { t: 'Dua musim untuk durian', d: 'Bina tanah hampir sepanjang tahun, kemudian biarkan zon akar kering dan panas sebelum berbunga. Tab Durian ada senarai semak untuk setiap musim.' }
-    ],
-    tip: 'Petua: pasang aplikasi ini supaya boleh dibaca tanpa internet di dusun.',
-    next: 'Seterusnya', start: 'Mula membaca', skip: 'Langkau', back: 'Kembali'
-  }
+  tip: { text: 'Petua: pasang aplikasi ini supaya boleh dibaca tanpa internet di dusun. Senarai semak durian ada di tab <a href="#durian">Durian</a>.', close: 'Tutup petua' }
 }
 };
