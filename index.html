@@ -55,8 +55,12 @@
   --warn:#e2b14e; --warn-soft:#3a2f17;
   --soil:#4a3e2e; --soil-mid:#5e4b33; --soil-dark:#77603f; --water:#6fa8dc; --sun:#e6b84a; color-scheme:dark}
 /* Chinese text: system CJK faces (the Latin web fonts have no Chinese glyphs) */
-:lang(zh) h1,:lang(zh) h2,:lang(zh) h3,:lang(zh) .sec-head .t{font-weight:600}
+:lang(zh) h1,:lang(zh) h2,:lang(zh) h3,:lang(zh) .sec-head .t{font-weight:700}
 :lang(zh) body,:lang(zh) .body{line-height:1.7}
+/* System CJK regular weight reads thin, especially light-on-dark: one step heavier and larger */
+:lang(zh) body{font-size:1.1rem;font-weight:500}
+:lang(zh) .fig .lb,:lang(zh) .sec-head .take{font-weight:500}
+:lang(zh) .fig .lb.strong,:lang(zh) .fig .lb.cut,:lang(zh) .fig .lb.title{font-weight:700}
 :lang(zh){--f-display:"Noto Serif SC","Source Han Serif SC","Songti SC","SimSun",serif;
   --f-body:system-ui,-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif}
 
