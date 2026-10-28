@@ -263,7 +263,7 @@ const FIGS = {
   },
 
   // durian · induction timeline, flush to flower buds
-  fd2: L => svg(232, `
+  fd2: L => svg(206, `
     <line x1="34" y1="30" x2="34" y2="184" class="tl"/>
     ${[[30, L.flush], [80, L.harden], [130, L.dry], [180, L.buds]].map(([y, s], i) => `
       <circle cx="34" cy="${y}" r="15" class="tl-dot"/>
@@ -274,7 +274,6 @@ const FIGS = {
         `<g class="bud"><circle cx="29" cy="${y + 2}" r="3"/><circle cx="34" cy="${y - 3}" r="3"/><circle cx="39" cy="${y + 2}" r="3"/></g>`
       ][i]}
       ${txt(60, y + 5, s, 'lb strong')}`).join('')}
-    ${txt(8, 222, L.note, 'lb small')}
   `, [L.flush, L.harden, L.dry, L.buds].join(' → ')),
 
   // durian · two seasons on the orchard floor
