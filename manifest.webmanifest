@@ -1,0 +1,22 @@
+{
+  "name": "Cut & Leave: Grass, Roots and Soil",
+  "short_name": "Cut & Leave",
+  "description": "The science of building orchard soil by cutting grass instead of spraying it, written for durian growers.",
+  "id": "./",
+  "start_url": "./#points",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#eef2ec",
+  "theme_color": "#24432f",
+  "categories": ["education", "lifestyle"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Durian seasons", "url": "./#durian", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Sources", "url": "./#sources", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

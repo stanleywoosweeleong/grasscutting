@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cut &amp; Leave</title>
+<meta name="description" content="The science of building orchard soil by cutting grass instead of spraying it, written for durian growers.">
+<meta name="theme-color" content="#24432f" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a15" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cut & Leave">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: phone-first app shell. Fixed top bar, one scrolling view per tab, fixed bottom tab bar. */
+:root{
+  --bg:#eef2ec; --surface:#fbfcf9; --ink:#1d2a21; --muted:#5a695d; --line:#d3dbd1;
+  --bar:#24432f; --bar-ink:#eef5ef;
+  --mono:#2f7d4f; --mono-soft:#dcefe2; --di:#8a3f7a; --di-soft:#f3e2ee;
+  --warn:#9a6a0c; --warn-soft:#f6ead0;
+  --f-display:"Young Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --tabbar:64px; --topbar:56px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#121a15; --surface:#1a241e; --ink:#e2eae3; --muted:#9aab9e; --line:#2e3c34;
+  --bar:#16211a; --bar-ink:#e2eae3;
+  --mono:#72c693; --mono-soft:#1f3628; --di:#d98fc8; --di-soft:#372331;
+  --warn:#e2b14e; --warn-soft:#3a2f17; color-scheme:dark}}
+
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16.5px;line-height:1.55;
+  -webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;margin:0;line-height:1.2;text-wrap:balance}
+p{margin:0}
+a{color:var(--mono)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--mono);outline-offset:2px}
+
+/* Top bar */
+.top{position:fixed;inset:0 0 auto;z-index:20;background:var(--bar);color:var(--bar-ink);
+  padding-top:env(safe-area-inset-top,0px);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.top-in{height:var(--topbar);display:flex;align-items:center;gap:12px;max-width:720px;margin:0 auto}
+.top h1{font-size:1.3rem;flex:1}
+.install{display:none;border:1px solid color-mix(in srgb,var(--bar-ink) 40%,transparent);background:transparent;color:var(--bar-ink);
+  border-radius:999px;padding:6px 14px;font-size:.88rem;cursor:pointer}
+.install.show{display:inline-block}
+.offline{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;opacity:.8}
+
+/* Views */
+main{padding-top:calc(var(--topbar) + env(safe-area-inset-top,0px));
+  padding-bottom:calc(var(--tabbar) + env(safe-area-inset-bottom,0px) + 24px);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.view{max-width:720px;margin:0 auto;padding-top:20px;display:flex;flex-direction:column;gap:16px}
+.view[hidden]{display:none}
+.eyebrow{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lede{color:var(--muted);font-size:1.02rem}
+.view > h2{font-size:1.6rem}
+
+/* Key point cards */
+.points{display:flex;flex-direction:column;gap:10px;list-style:none;margin:0;padding:0}
+.point{display:grid;grid-template-columns:2.2rem minmax(0,1fr) auto;gap:12px;align-items:start;width:100%;text-align:left;
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;cursor:pointer}
+.point:active{transform:scale(.99)}
+.point .n{font-family:var(--f-display);font-size:1.2rem;color:var(--mono);line-height:1.3}
+.point strong{display:block;font-weight:700;line-height:1.35;margin-bottom:4px}
+.point span.t{color:var(--muted);font-size:.94rem}
+.point .go{color:var(--muted);font-size:1.2rem;line-height:1.3}
+
+/* Learn accordion */
+details.sec{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+details.sec > summary{list-style:none;cursor:pointer;padding:16px;display:grid;grid-template-columns:2rem minmax(0,1fr) 1rem;gap:10px;align-items:center}
+details.sec > summary::-webkit-details-marker{display:none}
+details.sec > summary h3{font-size:1.1rem}
+details.sec > summary .n{font-family:var(--f-display);color:var(--mono)}
+details.sec > summary .chev{transition:transform .2s;color:var(--muted)}
+details.sec[open] > summary .chev{transform:rotate(90deg)}
+.body{padding:0 16px 18px;display:flex;flex-direction:column;gap:12px}
+.body ul,.body ol{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px}
+.cite{font-size:.86rem;color:var(--muted)}
+.cite a{white-space:nowrap}
+.note{background:var(--warn-soft);border-radius:10px;padding:12px 14px;font-size:.95rem}
+.note b{color:var(--warn)}
+
+/* Compare rows (mobile-friendly tables) */
+.compare{display:flex;flex-direction:column;gap:10px}
+.crow{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.crow .k{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:8px 12px 0}
+.crow .vals{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px 12px}
+.crow .vals div{font-size:.93rem;padding:8px 10px;border-radius:8px}
+.crow .a{background:var(--mono-soft)} .crow .b{background:var(--di-soft)}
+.crow .vals small{display:block;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700;margin-bottom:2px}
+.crow .a small{color:var(--mono)} .crow .b small{color:var(--di)}
+.crow .why{font-size:.88rem;color:var(--muted);padding:0 12px 10px}
+
+/* Durian */
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px}
+.seg button{border:0;border-radius:9px;padding:10px 8px;background:transparent;cursor:pointer;font-weight:700;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--bar);color:var(--bar-ink)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.checks label{display:grid;grid-template-columns:1.5rem minmax(0,1fr);gap:10px;align-items:start;padding:8px 0;cursor:pointer}
+.checks input{width:1.25rem;height:1.25rem;margin:2px 0 0;accent-color:var(--mono)}
+.checks input:checked + span{color:var(--muted);text-decoration:line-through}
+.reset{align-self:flex-start;border:1px solid var(--line);background:transparent;border-radius:999px;padding:6px 14px;font-size:.88rem;cursor:pointer}
+
+/* Sources */
+.refs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+.refs li{padding:12px 0;border-bottom:1px solid var(--line);font-size:.93rem}
+.refs a{word-break:break-all}
+
+/* Tab bar */
+.tabs{position:fixed;inset:auto 0 0;z-index:20;background:var(--surface);border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px))}
+.tabs-in{height:var(--tabbar);display:grid;grid-template-columns:repeat(4,1fr);max-width:720px;margin:0 auto}
+.tabs a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-decoration:none;color:var(--muted);font-size:.74rem;font-weight:700}
+.tabs svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tabs a[aria-current="page"]{color:var(--mono)}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tabbar) + env(safe-area-inset-bottom,0px) + 14px);
+  background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:.9rem;z-index:30;max-width:calc(100% - 32px)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <h1>Cut &amp; Leave</h1>
+    <span class="offline" id="offline" hidden>Offline</span>
+    <button class="install" id="installBtn" type="button">Install</button>
+  </div>
+</header>
+
+<main>
+<!-- POINTS -->
+<section class="view" id="points" aria-labelledby="h-points">
+  <span class="eyebrow">For durian growers</span>
+  <h2 id="h-points">Build soil by cutting, not spraying</h2>
+  <p class="lede">Published research backs each point below. Tap one for the evidence and what to do with it.</p>
+  <ol class="points" id="pointList"></ol>
+</section>
+
+<!-- LEARN -->
+<section class="view" id="learn" aria-labelledby="h-learn" hidden>
+  <span class="eyebrow">The science</span>
+  <h2 id="h-learn">How grass and soil shape each other</h2>
+
+  <details class="sec" id="s1">
+    <summary><span class="n">1</span><h3>Monocot grasses vs dicot ground covers</h3><span class="chev">›</span></summary>
+    <div class="body">
+      <p>Monocots carry one cotyledon (seed leaf) in the seed and dicots carry two (单子叶 / 双子叶). Every true grass (family Poaceae) is a monocot. The dicots used as ground covers are broadleaf plants such as white clover 白车轴草, dichondra 马蹄金 and perennial peanut 蔓花生.</p>
+      <div class="compare">
+        <div class="crow"><div class="k">Roots</div><div class="vals"><div class="a"><small>Monocot</small>Fibrous mat from the crown</div><div class="b"><small>Dicot</small>Taproot, plus roots at creeping nodes</div></div><p class="why">A fibrous mat copes with thin or compact soil. A taproot needs loose, deep soil.</p></div>
+        <div class="crow"><div class="k">Leaves</div><div class="vals"><div class="a"><small>Monocot</small>Narrow, parallel veins</div><div class="b"><small>Dicot</small>Broad, net veins</div></div><p class="why">Broad leaves lose more water, so they need steadier moisture.</p></div>
+        <div class="crow"><div class="k">Growing point</div><div class="vals"><div class="a"><small>Monocot</small>At the crown, near the soil</div><div class="b"><small>Dicot</small>At shoot tips, above ground</div></div><p class="why">Cutting removes dicot tips but spares grass crowns.</p></div>
+        <div class="crow"><div class="k">Photosynthesis</div><div class="vals"><div class="a"><small>Monocot</small>Mostly C4 (tropical turf)</div><div class="b"><small>Dicot</small>C3</div></div><p class="why">C4 makes more growth per unit of water and nitrogen.</p></div>
+      </div>
+      <p>Legumes such as 蔓花生 add one twist: they make their own nitrogen, so what they need from fertile soil is phosphorus, potassium and moisture (section 3).</p>
+      <p class="cite">Source: <a href="https://doi.org/10.1104/pp.84.3.954">Sage &amp; Pearcy 1987</a></p>
+    </div>
+  </details>
+
+  <details class="sec" id="s2">
+    <summary><span class="n">2</span><h3>What grows is the soil's report card</h3><span class="chev">›</span></summary>
+    <div class="body">
+      <p>What grows naturally reflects the soil's water, nutrients, structure and disturbance history. Ecologists call these <b>indicator plants</b>. Fields dominated by 茅草 in West Africa, for example, had degraded, low-fertility soils.</p>
+      <p>The report card also feeds back. Plants change their soil through dead roots, root exudates, the microbes they host and the nutrients they pull up. The changed soil then favours different plants. This <b>plant–soil feedback</b> drives succession.</p>
+      <p>You can't pick a grass to fix soil overnight. Managing the vegetation that grows there, mainly by how you cut it, is how the soil improves over the years.</p>
+      <p class="cite">Sources: <a href="https://doi.org/10.1016/s0261-2194(00)00044-2">Chikoye et al. 2000</a> · <a href="https://doi.org/10.1111/1365-2745.12054">van der Putten et al. 2013</a></p>
+    </div>
+  </details>
+
+  <details class="sec" id="s3">
+    <summary><span class="n">3</span><h3>Why 蔓花生 wins on poor soil and loses on rich soil</h3><span class="chev">›</span></summary>
+    <div class="body">
+      <p>Perennial peanut (<i>Arachis pintoi</i>) has an edge only where soil nitrogen is short. On fertile soil that edge switches off, and faster grasses shade it out.</p>
+      <ol>
+        <li><b>Fixing nitrogen costs energy.</b> Root-nodule bacteria turn air nitrogen into ammonia, paid for with the plant's sugars. That costs more than taking nitrate from the soil.</li>
+        <li><b>On low-nitrogen soil the cost pays off.</b> Grasses are held back by the shortage; the legume is not.</li>
+        <li><b>On rich soil, fixation switches down.</b> Soil nitrate suppresses nodules, so the legume loses its edge.</li>
+        <li><b>Then it competes for light and loses.</b> C4 grasses grow taller and faster in heat. In mixed pastures, nitrogen fertilizer reliably lowers the legume share.</li>
+      </ol>
+      <p>On a fertile, fertilized orchard floor, the natural vegetation is grass, and 蔓花生 is working against it.</p>
+      <p class="cite">Sources: <a href="https://doi.org/10.1086/283858">Gutschick 1981</a> · <a href="https://doi.org/10.1146/annurev.pp.42.060191.002105">Vance &amp; Heichel 1991</a> · <a href="https://doi.org/10.1080/07352688809382257">Streeter &amp; Wong 1988</a> · <a href="https://doi.org/10.1007/BF00011314">Ledgard &amp; Steele 1992</a> · <a href="https://doi.org/10.3920/978-90-8686-552-9_256">Lascano et al. 2005</a></p>
+    </div>
+  </details>
+
+  <details class="sec" id="s4">
+    <summary><span class="n">4</span><h3>蔓花生 vs 茅草 on sandy soil</h3><span class="chev">›</span></summary>
+    <div class="body">
+      <p>On dry sand, cogongrass (<i>Imperata cylindrica</i>, 茅草) almost always wins. Shade is what pushes it back.</p>
+      <div class="compare">
+        <div class="crow"><div class="k">Below ground</div><div class="vals"><div class="a"><small>茅草</small>Dense rhizomes; regrows after cutting and fire</div><div class="b"><small>蔓花生</small>Taproot and stolons; slow to establish</div></div></div>
+        <div class="crow"><div class="k">Drought on sand</div><div class="vals"><div class="a"><small>茅草</small>Tolerates it</div><div class="b"><small>蔓花生</small>Fixation and growth slow down</div></div></div>
+        <div class="crow"><div class="k">Weakness</div><div class="vals"><div class="a"><small>茅草</small>Shade</div><div class="b"><small>蔓花生</small>Being overtopped</div></div></div>
+      </div>
+      <p>Shade from tree fallows or tall cover crops such as velvetbean (<i>Mucuna</i>) suppresses 茅草. 蔓花生 grows too low to do that. In an orchard, the closing tree canopy does the job over time.</p>
+      <p class="cite">Sources: <a href="https://doi.org/10.1080/07352680490505114">MacDonald 2004</a> · <a href="https://doi.org/10.1007/bf00142871">MacDicken et al. 1996</a> · <a href="https://doi.org/10.1080/096708700227453">Akobundu et al. 2000</a></p>
+    </div>
+  </details>
+
+  <details class="sec" id="s5">
+    <summary><span class="n">5</span><h3>Roots build more soil than leaves</h3><span class="chev">›</span></summary>
+    <div class="body">
+      <p>Carbon from roots stays in soil about <b>2.4 times longer</b> than carbon from leaves and stems. Microbes also turn underground inputs into stable organic matter more efficiently than surface litter.</p>
+      <p>Roots build soil in four ways:</p>
+      <ul>
+        <li><b>Organic matter.</b> Dead roots and root sugars feed microbes, whose remains bind to clay as stable carbon.</li>
+        <li><b>Pores.</b> Growing roots push soil apart; rotted roots leave channels for air, water, earthworms and new roots.</li>
+        <li><b>Glue.</b> Fine roots, fungal threads and the fungal protein glomalin bind clay into crumbs that drain instead of sealing.</li>
+        <li><b>Chemistry and soil life.</b> Roots free locked phosphorus, lift nutrients from depth and feed the soil food web.</li>
+      </ul>
+      <p class="note"><b>Cut high to keep roots growing.</b> Removing more than about half of a grass's leaf area stopped root growth in a classic USDA study. Occasional cuts feed the soil; scalping shrinks the roots that build it.</p>
+      <p class="cite">Sources: <a href="https://doi.org/10.1007/s11104-004-0907-y">Rasse et al. 2005</a> · <a href="https://doi.org/10.1038/s41561-018-0258-6">Sokol &amp; Bradford 2019</a> · <a href="https://doi.org/10.1071/SR9950221">Cresswell &amp; Kirkegaard 1995</a> · <a href="https://doi.org/10.1111/j.1365-2389.1982.tb01755.x">Tisdall &amp; Oades 1982</a> · <a href="https://doi.org/10.4141/S04-003">Rillig 2004</a> · Crider 1955 (USDA Tech. Bull. 1102)</p>
+    </div>
+  </details>
+
+  <details class="sec" id="s6">
+    <summary><span class="n">6</span><h3>Cutting vs herbicide</h3><span class="chev">›</span></summary>
+    <div class="body">
+      <p>Cutting beats herbicide for soil building because it keeps roots alive. A systemic herbicide such as glyphosate kills the whole plant, roots included. Those dead roots add organic matter once, and then the soil gets nothing until something regrows.</p>
+      <div class="compare">
+        <div class="crow"><div class="k">Roots</div><div class="vals"><div class="a"><small>Cutting</small>Alive; shed and regrow each cut</div><div class="b"><small>Herbicide</small>Die once</div></div></div>
+        <div class="crow"><div class="k">Soil cover</div><div class="vals"><div class="a"><small>Cutting</small>Always covered</div><div class="b"><small>Herbicide</small>Bare; crusting and erosion</div></div></div>
+        <div class="crow"><div class="k">Organic matter</div><div class="vals"><div class="a"><small>Cutting</small>Small pulses for years</div><div class="b"><small>Herbicide</small>One pulse</div></div></div>
+      </div>
+      <p>Pulling or digging is worse than either, because it also breaks up the soil crumbs.</p>
+      <p class="cite">Source: <a href="https://doi.org/10.1038/s41561-018-0258-6">Sokol &amp; Bradford 2019</a></p>
+    </div>
+  </details>
+
+  <details class="sec" id="s7">
+    <summary><span class="n">7</span><h3>Why regular cutting ends in cow grass</h3><span class="chev">›</span></summary>
+    <div class="body">
+      <p>Frequent cutting acts as a filter. Only low, creeping grasses survive it, so diversity drops and cow grass (<i>Axonopus compressus</i>, 地毯草) takes over. The shift is gradual: a mixed sward can take several years of regular cutting to become mostly cow grass.</p>
+      <ul>
+        <li><b>Who survives:</b> cow grass spreads by stolons with its growing points below cutting height. It suits moist, slightly acidic soils and tolerates part shade.</li>
+        <li><b>The pattern:</b> species richness peaks at moderate disturbance. Very frequent cutting leaves only tolerant species; rare cutting lets a few tall ones dominate.</li>
+        <li><b>Direct evidence:</b> cutting urban lawns less often increased plant diversity.</li>
+      </ul>
+      <p>A uniform cow-grass mat is easy, covers soil well and grows slowly. A mixed sward has roots at more depths and more soil life.</p>
+      <p class="cite">Sources: <a href="https://doi.org/10.1079/cabicompendium.8094">CABI</a> · <a href="https://doi.org/10.1038/242344a0">Grime 1973</a> · <a href="https://doi.org/10.1126/science.199.4335.1302">Connell 1978</a> · <a href="https://doi.org/10.1016/j.landurbplan.2018.08.009">Chollet et al. 2018</a></p>
+    </div>
+  </details>
+
+  <details class="sec" id="s8">
+    <summary><span class="n">8</span><h3>Putting it into practice</h3><span class="chev">›</span></summary>
+    <div class="body">
+      <p>Cut, leave the cuttings, cut higher, and reduce fertilizer step by step. Each step lowers both fertilizer and cutting costs.</p>
+      <ul>
+        <li><b>Leave the clippings.</b> Returning clippings substantially reduced the nitrogen fertilizer turf needed. Rake surplus into tree rings as mulch.</li>
+        <li><b>Cut higher.</b> About 10–15 cm is a reasonable working height for an orchard floor (a suggestion, not from a study).</li>
+        <li><b>Reduce fertilizer gradually</b> and watch whether the cow grass stays green and dense.</li>
+        <li><b>Time cuts against seeding</b> to shift the mix without herbicide.</li>
+        <li><b>Use zones for diversity:</b> paths and tree rings short, the rest cut less often.</li>
+        <li><b>On 茅草 patches,</b> use shade and tall cover crops, not more cutting alone.</li>
+        <li><b>Don't pull or dig.</b></li>
+      </ul>
+      <p class="note"><b>Durian induction season is the exception.</b> See the Durian tab.</p>
+      <p class="cite">Sources: <a href="https://doi.org/10.2135/cropsci2002.1225">Kopp &amp; Guillard 2002</a> · <a href="https://doi.org/10.3733/ucanr.8006">Harivandi &amp; Gibeault 1999</a></p>
+    </div>
+  </details>
+</section>
+
+<!-- DURIAN -->
+<section class="view" id="durian" aria-labelledby="h-durian" hidden>
+  <span class="eyebrow">Durian orchards</span>
+  <h2 id="h-durian">Two seasons on the orchard floor</h2>
+  <p class="lede">Durian flowering needs a stress signal from the root zone. After the leaf flush matures, the root zone must dry out and the ground must reach a certain temperature. A thick grass mat and mulch keep it moist and cool.</p>
+  <div class="seg" role="group" aria-label="Season">
+    <button type="button" id="seg-normal" data-season="normal" aria-pressed="true">Normal season</button>
+    <button type="button" id="seg-induction" data-season="induction" aria-pressed="false">Induction season</button>
+  </div>
+  <div class="card" id="season-normal">
+    <h3>Most of the year: build soil</h3>
+    <ul class="checks" data-list="normal">
+      <li><label><input type="checkbox" id="n1"><span>Cut every few months; never pull or dig</span></label></li>
+      <li><label><input type="checkbox" id="n2"><span>Cut high, about 10–15 cm</span></label></li>
+      <li><label><input type="checkbox" id="n3"><span>Leave clippings; rake surplus into tree rings</span></label></li>
+      <li><label><input type="checkbox" id="n4"><span>Cut unwanted species before they set seed</span></label></li>
+      <li><label><input type="checkbox" id="n5"><span>Reduce fertilizer a step and watch the grass</span></label></li>
+    </ul>
+    <button class="reset" type="button" data-reset="normal">Clear ticks</button>
+  </div>
+  <div class="card" id="season-induction" hidden>
+    <h3>Before and during induction: let the root zone dry and warm</h3>
+    <ul class="checks" data-list="induction">
+      <li><label><input type="checkbox" id="i1"><span>Cut short under the canopy</span></label></li>
+      <li><label><input type="checkbox" id="i2"><span>Rake clippings and mulch out of the root zone</span></label></li>
+      <li><label><input type="checkbox" id="i3"><span>Hold back nitrogen; it pushes leaf flushes instead of flowers</span></label></li>
+      <li><label><input type="checkbox" id="i4"><span>Check timing with local durian extension advice</span></label></li>
+      <li><label><input type="checkbox" id="i5"><span>After fruit set, return to the normal cycle</span></label></li>
+    </ul>
+    <button class="reset" type="button" data-reset="induction">Clear ticks</button>
+  </div>
+  <p class="cite">Published guidance emphasises a dry spell after the leaf flush (<a href="https://doi.org/10.1079/cabicompendium.20179">CABI: Durio zibethinus</a>). In Thailand, growers also use paclobutrazol to induce flowering (<a href="https://doi.org/10.17660/actahortic.1992.321.28">Chandraparnik et al. 1992</a>). Ticks are saved on this phone only.</p>
+</section>
+
+<!-- SOURCES -->
+<section class="view" id="sources" aria-labelledby="h-sources" hidden>
+  <span class="eyebrow">References</span>
+  <h2 id="h-sources">Sources</h2>
+  <p class="lede">Every DOI was checked against the Crossref registry. Crider 1955 has no DOI.</p>
+  <ul class="refs" id="refList"></ul>
+</section>
+</main>
+
+<nav class="tabs" aria-label="Sections">
+  <div class="tabs-in">
+    <a href="#points" data-tab="points"><svg viewBox="0 0 24 24"><path d="M5 20V9M12 20V4M19 20v-8"/></svg>Points</a>
+    <a href="#learn" data-tab="learn"><svg viewBox="0 0 24 24"><path d="M12 21V11M12 11c0-4 3-7 7-7 0 4-3 7-7 7zM12 14c0-3-2.5-5-6-5 0 3 2.5 5 6 5z"/><path d="M4 21h16"/></svg>Learn</a>
+    <a href="#durian" data-tab="durian"><svg viewBox="0 0 24 24"><path d="M12 3c4.5 2 7 6 7 10a7 7 0 0 1-14 0c0-4 2.5-8 7-10z"/><path d="M9 11l1.5 1.5M14 10l1 1M10 15l1 1M14.5 14l1 1"/></svg>Durian</a>
+    <a href="#sources" data-tab="sources"><svg viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6z"/><path d="M9 10h6M9 14h6M9 18h4"/></svg>Sources</a>
+  </div>
+</nav>
+
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const POINTS=[
+  ["s1","Monocot grasses such as 茅草 and 地毯草 need less from the soil than dicot covers","Fibrous roots, a protected growing point and efficient C4 photosynthesis."],
+  ["s2","What grows is the soil's report card","Plants also change the soil, which drives succession."],
+  ["s3","蔓花生 thrives on low-nitrogen soil and loses on fertile soil","Soil nitrate switches fixation down; taller grasses then shade it."],
+  ["s4","On sand, 茅草 beats 蔓花生","Shade from trees or tall cover crops is what suppresses 茅草."],
+  ["s5","Roots add more organic matter than leaves","Root carbon stays about 2.4× longer; roots also build pores, crumbs and nutrient cycling."],
+  ["s5","Cut, don't pull; rotting roots leave air channels and nutrients","Cutting high keeps roots growing and the cycle running."],
+  ["s6","Cutting is better than herbicide","Living roots feed the soil continuously; dead roots feed it once."],
+  ["s7","Frequent cutting reduces diversity and ends in cow grass","Diversity peaks at moderate cutting; zones can give both."],
+  ["s8","Cut fertilizer rather than switch to herbicide","Returned clippings replace part of the nitrogen fertilizer."]
+];
+const REFS=[
+  ["Akobundu, Udensi & Chikoye (2000). Velvetbean suppresses speargrass and increases maize yield. Int. J. Pest Management.","10.1080/096708700227453"],
+  ["CABI (2019). Axonopus compressus (carpet grass). CABI Compendium.","10.1079/cabicompendium.8094"],
+  ["CABI (2019). Durio zibethinus (durian). CABI Compendium.","10.1079/cabicompendium.20179"],
+  ["Carvalho et al. (2019). Nodulation and biological nitrogen fixation in forage peanut (Arachis pintoi). Agric. Ecosyst. Environ.","10.1016/j.agee.2019.02.016"],
+  ["Chandraparnik, Hiranpradit & Punnachit (1992). Paclobutrazol influences flower induction in durian. Acta Horticulturae 321.","10.17660/actahortic.1992.321.28"],
+  ["Chikoye, Manyong & Ekeleme (2000). Characteristics of speargrass-dominated fields in West Africa. Crop Protection.","10.1016/s0261-2194(00)00044-2"],
+  ["Chikoye et al. (2002). Response of speargrass to cover crops integrated with handweeding and chemical control. Crop Protection.","10.1016/s0261-2194(01)00078-3"],
+  ["Chollet et al. (2018). From urban lawns to urban meadows: reduction of mowing frequency increases plant diversity. Landscape and Urban Planning.","10.1016/j.landurbplan.2018.08.009"],
+  ["Connell (1978). Diversity in tropical rain forests and coral reefs. Science 199.","10.1126/science.199.4335.1302"],
+  ["Cresswell & Kirkegaard (1995). Subsoil amelioration by plant roots: the process and the evidence. Aust. J. Soil Research 33.","10.1071/SR9950221"],
+  ["Crider (1955). Root-growth stoppage resulting from defoliation of grass. USDA Technical Bulletin 1102.",null],
+  ["Grime (1973). Competitive exclusion in herbaceous vegetation. Nature 242.","10.1038/242344a0"],
+  ["Gutschick (1981). Evolved strategies in nitrogen acquisition by plants. American Naturalist 118.","10.1086/283858"],
+  ["Harivandi & Gibeault (1999). Mowing your lawn and grasscycling. UC ANR Publication 8006.","10.3733/ucanr.8006"],
+  ["Kopp & Guillard (2002). Clipping management and nitrogen fertilization of turfgrass. Crop Science 42.","10.2135/cropsci2002.1225"],
+  ["Laidlaw (1984). Effect of spring nitrogen fertilizer on white clover content. Grass and Forage Science.","10.1111/j.1365-2494.1984.tb01702.x"],
+  ["Lascano, Peters & Holmann (2005). Arachis pintoi in the humid tropics of Colombia: a forage legume success story.","10.3920/978-90-8686-552-9_256"],
+  ["Ledgard & Steele (1992). Biological nitrogen fixation in mixed legume/grass pastures. Plant and Soil 141.","10.1007/BF00011314"],
+  ["MacDicken et al. (1996). Shade-based control of Imperata cylindrica: tree fallows and cover crops. Agroforestry Systems.","10.1007/bf00142871"],
+  ["MacDonald (2004). Cogongrass (Imperata cylindrica): biology, ecology, and management. Crit. Rev. Plant Sciences 23.","10.1080/07352680490505114"],
+  ["Rasse, Rumpel & Dignac (2005). Is soil carbon mostly root carbon? Plant and Soil 269.","10.1007/s11104-004-0907-y"],
+  ["Rillig (2004). Arbuscular mycorrhizae, glomalin, and soil aggregation. Can. J. Soil Science 84.","10.4141/S04-003"],
+  ["Sage & Pearcy (1987). The nitrogen use efficiency of C3 and C4 plants. Plant Physiology 84.","10.1104/pp.84.3.954"],
+  ["Sokol & Bradford (2019). Microbial formation of stable soil carbon is more efficient from belowground than aboveground input. Nature Geoscience 12.","10.1038/s41561-018-0258-6"],
+  ["Streeter & Wong (1988). Inhibition of legume nodule formation and N2 fixation by nitrate. Crit. Rev. Plant Sciences 7.","10.1080/07352688809382257"],
+  ["Tisdall & Oades (1982). Organic matter and water-stable aggregates in soils. J. Soil Science 33.","10.1111/j.1365-2389.1982.tb01755.x"],
+  ["Vance & Heichel (1991). Carbon in N2 fixation: limitation or exquisite adaptation. Annu. Rev. Plant Physiol. 42.","10.1146/annurev.pp.42.060191.002105"],
+  ["van der Putten et al. (2013). Plant–soil feedbacks: the past, the present and future challenges. Journal of Ecology 101.","10.1111/1365-2745.12054"]
+];
+
+const $=s=>document.querySelector(s);
+const store={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch{return d}},
+             set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+
+// Points
+$('#pointList').innerHTML=POINTS.map(([s,t,d],i)=>`<li><button class="point" type="button" data-sec="${s}">
+  <span class="n">${i+1}</span><span><strong>${t}</strong><span class="t">${d}</span></span><span class="go" aria-hidden="true">›</span></button></li>`).join('');
+document.querySelectorAll('.point').forEach(b=>b.addEventListener('click',()=>openSection(b.dataset.sec)));
+
+// Sources
+$('#refList').innerHTML=REFS.map(([t,doi])=>`<li>${t}${doi?` <a href="https://doi.org/${doi}" target="_blank" rel="noopener">doi:${doi}</a>`:' No DOI.'}</li>`).join('');
+
+// Tabs
+const VIEWS=['points','learn','durian','sources'];
+function show(tab){
+  if(!VIEWS.includes(tab)) tab='points';
+  VIEWS.forEach(v=>document.getElementById(v).hidden=v!==tab);
+  document.querySelectorAll('.tabs a').forEach(a=>{if(a.dataset.tab===tab)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
+}
+if('scrollRestoration' in history) history.scrollRestoration='manual';
+let pendingSec=null;
+function route(){
+  show(location.hash.slice(1)||'points');
+  if(!pendingSec){window.scrollTo(0,0);return}
+  const d=document.getElementById(pendingSec);pendingSec=null;d.open=true;
+  const y=d.getBoundingClientRect().top+scrollY-(document.querySelector('.top').offsetHeight+12);
+  window.scrollTo(0,y);
+}
+window.addEventListener('hashchange',route);
+route();
+function openSection(id){
+  pendingSec=id;
+  if(location.hash==='#learn') route(); else location.hash='learn';
+}
+
+// Durian season + checklist
+function setSeason(s){
+  store.set('season',s);
+  document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.season===s));
+  $('#season-normal').hidden=s!=='normal'; $('#season-induction').hidden=s!=='induction';
+}
+document.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>setSeason(b.dataset.season)));
+setSeason(store.get('season','normal'));
+const ticks=store.get('ticks',{});
+document.querySelectorAll('.checks input').forEach(i=>{
+  i.checked=!!ticks[i.id];
+  i.addEventListener('change',()=>{ticks[i.id]=i.checked;store.set('ticks',ticks)});
+});
+document.querySelectorAll('.reset').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll(`[data-list="${b.dataset.reset}"] input`).forEach(i=>{i.checked=false;ticks[i.id]=false});
+  store.set('ticks',ticks); toast('Ticks cleared');
+}));
+
+// Toast
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2200)}
+
+// Offline badge
+function net(){$('#offline').hidden=navigator.onLine}
+addEventListener('online',net);addEventListener('offline',net);net();
+
+// Install
+let deferred=null;
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;$('#installBtn').classList.add('show')});
+if(isIOS&&!standalone) $('#installBtn').classList.add('show');
+$('#installBtn').addEventListener('click',async()=>{
+  if(deferred){deferred.prompt();const r=await deferred.userChoice;deferred=null;if(r.outcome==='accepted')$('#installBtn').classList.remove('show')}
+  else if(isIOS) toast('Tap Share, then Add to Home Screen');
+});
+addEventListener('appinstalled',()=>{$('#installBtn').classList.remove('show');toast('Installed')});
+
+// Service worker
+if('serviceWorker' in navigator){
+  addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(reg=>{
+    reg.addEventListener('updatefound',()=>{const w=reg.installing;w&&w.addEventListener('statechange',()=>{
+      if(w.state==='installed'&&navigator.serviceWorker.controller) toast('Updated. Reopen the app to see changes.')})});
+  }).catch(()=>{}));
+}
+</script>
+</body>
+</html>
