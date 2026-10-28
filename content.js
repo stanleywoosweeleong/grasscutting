@@ -356,7 +356,7 @@ en: {
 
 /* ───────────────────────── 中文 ───────────────────────── */
 zh: {
-  htmlLang: 'zh-Hans', code: '中', native: '中文',
+  htmlLang: 'zh-Hans', code: '中文', native: '中文',
   appName: '割草养土',
   tabs: { learn: '学习', durian: '榴莲', sources: '来源' },
   install: '安装', installed: '已安装', offline: '离线',
