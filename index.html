@@ -25,6 +25,7 @@
   --bar:#24432f; --bar-ink:#eef5ef;
   --mono:#2f7d4f; --mono-soft:#dcefe2; --di:#8a3f7a; --di-soft:#f3e2ee;
   --warn:#9a6a0c; --warn-soft:#f6ead0;
+  --soil:#ddcbaa; --soil-mid:#c4aa7e; --soil-dark:#9c7f55; --water:#3b7cb4; --sun:#e0a419;
   --f-display:"Young Serif", Georgia, "Times New Roman", serif;
   --f-body:"Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --tabbar:64px; --topbar:56px;
@@ -34,7 +35,8 @@
   --bg:#121a15; --surface:#1a241e; --ink:#e2eae3; --muted:#9aab9e; --line:#2e3c34;
   --bar:#16211a; --bar-ink:#e2eae3;
   --mono:#72c693; --mono-soft:#1f3628; --di:#d98fc8; --di-soft:#372331;
-  --warn:#e2b14e; --warn-soft:#3a2f17; color-scheme:dark}}
+  --warn:#e2b14e; --warn-soft:#3a2f17;
+  --soil:#4a3e2e; --soil-mid:#5e4b33; --soil-dark:#77603f; --water:#6fa8dc; --sun:#e6b84a; color-scheme:dark}}
 /* Chinese text: system CJK faces (the Latin web fonts have no Chinese glyphs) */
 :lang(zh){--f-display:"Noto Serif SC","Source Han Serif SC","Songti SC","SimSun",serif;
   --f-body:system-ui,-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif}
@@ -92,6 +94,50 @@ details.sec[open] > summary .chev{transform:rotate(90deg)}
 .cite a{white-space:nowrap}
 .note{background:var(--warn-soft);border-radius:10px;padding:12px 14px;font-size:.95rem}
 .note b{color:var(--warn)}
+
+/* Diagrams and photos */
+.fig,.ph{margin:0;display:flex;flex-direction:column;gap:6px}
+.fig svg{width:100%;height:auto;display:block;background:var(--bg);border-radius:10px}
+.fig figcaption,.ph figcaption{font-size:.8rem;color:var(--muted)}
+.ph img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;display:block;background:var(--line)}
+.ph.tall img{aspect-ratio:3/4;max-height:420px}
+.ph-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ph-row .ph img{aspect-ratio:1/1}
+.fig .lb{font:12px var(--f-body);fill:var(--ink)}
+.fig .lb.small{font-size:10.5px;fill:var(--muted)}
+.fig .lb.strong{font-weight:700}
+.fig .lb.title{font:700 13px var(--f-body)}
+.fig .lb.mono,.fig .lb.cut{fill:var(--mono)} .fig .lb.di{fill:var(--di)}
+.fig .lb.cut{font-weight:700}
+.fig .on-soil{fill:var(--ink)} .fig .lb.on-dark{fill:#fff;font-weight:700}
+.fig .soil{fill:var(--soil)} .fig .soil.mid{fill:var(--soil-mid)} .fig .soil.dark{fill:var(--soil-dark)} .fig .soil.sand{fill:var(--soil)}
+.fig .rule{stroke:var(--line);stroke-width:1}
+.fig .legend-bg{fill:var(--bg)}
+.fig .leaf{stroke:var(--mono)} .fig .pale{stroke:color-mix(in srgb,var(--mono) 55%,var(--muted))}
+.fig .stem{stroke:var(--di)} .fig .dileaf,.fig .dicot{fill:var(--di);opacity:.85}
+.fig .flower{fill:var(--sun)}
+.fig .root{stroke:var(--ink)} .fig .taproot{fill:var(--ink)} .fig .node{fill:var(--ink)}
+.fig .gp{fill:var(--sun);stroke:var(--surface);stroke-width:2}
+.fig .arrow,.fig .bracket{stroke:var(--muted);stroke-width:1.6}
+.fig .sun{fill:var(--sun)} .fig .sunray path{stroke:var(--sun);stroke-width:2;stroke-linecap:round}
+.fig .canopy{fill:color-mix(in srgb,var(--mono) 70%,var(--ink))} .fig .trunk{fill:var(--soil-dark)}
+.fig .shade{fill:var(--ink);opacity:.08}
+.fig .deadroot{stroke:var(--soil-dark)} .fig .om circle{fill:var(--soil-dark)}
+.fig .pore{stroke:var(--bg)} .fig .worm{stroke:#c9707a}
+.fig .crumb ellipse{fill:var(--soil-mid);stroke:var(--soil-dark);stroke-width:1}
+.fig .hypha{stroke:var(--ink);opacity:.55}
+.fig .uparrow{stroke:var(--mono)}
+.fig .badge{fill:var(--bar)} .fig .badge-t{font:700 11px var(--f-body);fill:var(--bar-ink)}
+.fig .axis{stroke:var(--muted);stroke-width:1.2}
+.fig .line-a{stroke:var(--mono)} .fig .line-b{stroke:var(--di)}
+.fig .sw-a{fill:var(--mono)} .fig .sw-b{fill:var(--di)}
+.fig .cutline{stroke:var(--mono)}
+.fig .zone-rest{fill:var(--mono-soft)} .fig .zone-path{fill:var(--surface)} .fig .zone-path.line{stroke:var(--line)}
+.fig .zone-ring{fill:var(--surface);stroke:var(--mono);stroke-width:1.5;stroke-dasharray:4 3}
+.fig .tuft{stroke:var(--mono);stroke-width:1.4;opacity:.6}
+.fig .mulch path{stroke:var(--soil-dark);stroke-width:3;stroke-linecap:round}
+.fig .drop path{fill:var(--water)}
+.fig .crack path{stroke:var(--soil-dark);stroke-width:1.6}
 
 /* Compare rows (mobile-friendly tables) */
 .compare{display:flex;flex-direction:column;gap:10px}
@@ -187,6 +233,7 @@ details.sec[open] > summary .chev{transform:rotate(90deg)}
   <span class="eyebrow" data-t="durian.eyebrow"></span>
   <h2 id="h-durian" data-t="durian.h2"></h2>
   <p class="lede" data-t="durian.lede"></p>
+  <div id="durianFig"></div>
   <div class="seg" role="group">
     <button type="button" id="seg-normal" data-season="normal" aria-pressed="true" data-t="durian.normal"></button>
     <button type="button" id="seg-induction" data-season="induction" aria-pressed="false" data-t="durian.induction"></button>
@@ -199,6 +246,7 @@ details.sec[open] > summary .chev{transform:rotate(90deg)}
   <div class="card" id="season-induction" hidden>
     <h3 data-t="durian.inductionTitle"></h3>
     <ul class="checks" data-list="induction"></ul>
+    <div id="budPhoto"></div>
     <button class="reset" type="button" data-reset="induction" data-t="durian.clear"></button>
   </div>
   <p class="cite" data-h="durian.cite"></p>
@@ -209,6 +257,9 @@ details.sec[open] > summary .chev{transform:rotate(90deg)}
   <h2 id="h-sources" data-t="sources.h2"></h2>
   <p class="lede" data-t="sources.lede"></p>
   <ul class="refs" id="refList"></ul>
+  <h3 data-t="photo.heading" style="margin-top:12px"></h3>
+  <p class="lede" data-t="photo.lede"></p>
+  <ul class="refs" id="photoCredits"></ul>
 </section>
 </main>
 
@@ -235,6 +286,7 @@ details.sec[open] > summary .chev{transform:rotate(90deg)}
 <div class="toast" id="toast" hidden></div>
 
 <script src="content.js"></script>
+<script src="figures.js"></script>
 <script>
 const $=s=>document.querySelector(s);
 const store={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch{return d}},
@@ -268,7 +320,7 @@ function render(){
     const cite=c.map(([n,d])=>d?`<a href="https://doi.org/${d}" target="_blank" rel="noopener">${n}</a>`:n).join(' · ');
     return `<details class="sec" id="${id}"${open.includes(id)?' open':''}>
       <summary><span class="n">${i+1}</span><span class="head"><h3>${s.t}</h3><span class="take">${s.take}</span></span><span class="chev" aria-hidden="true">›</span></summary>
-      <div class="body">${s.b.map(block).join('')}<p class="cite">${c.length>1?L.sourceMany:L.sourceOne} ${cite}</p></div></details>`;
+      <div class="body">${block(s.b[0])}${media(id)}${s.b.slice(1).map(block).join('')}<p class="cite">${c.length>1?L.sourceMany:L.sourceOne} ${cite}</p></div></details>`;
   }).join('');
 
   const ticks=store.get('ticks',{});
@@ -277,8 +329,26 @@ function render(){
   $('[data-list="induction"]').innerHTML=items(L.durian.inductionItems);
   document.querySelectorAll('.checks input').forEach(i=>i.addEventListener('change',()=>{const t=store.get('ticks',{});t[i.id]=i.checked;store.set('ticks',t)}));
 
+  $('#durianFig').innerHTML=figure('fd')+photo('durianFlowers');
+  $('#budPhoto').innerHTML=photo('durianBuds','tall');
+  $('#photoCredits').innerHTML=Object.entries(PHOTOS).map(([k,p])=>`<li>${L.photo[k]}: <a href="${p.page}" target="_blank" rel="noopener">${p.author}</a>, ${p.license}</li>`).join('');
   $('#refList').innerHTML=REFS.map(([t,d])=>`<li lang="en">${t}${d?` <a href="https://doi.org/${d}" target="_blank" rel="noopener">doi:${d}</a>`:' '+L.sources.noDoi}</li>`).join('');
   $('#langList').innerHTML=LANGS.map(k=>`<button type="button" data-lang="${k}" lang="${T[k].htmlLang}" aria-pressed="${k===lang}">${T[k].native}<span>${T[k].code}</span></button>`).join('');
+}
+function figure(id){
+  const L=T[lang];
+  return `<figure class="fig">${FIGS[id]({...L.fig[id], ...(id==='fd'?{normal:L.durian.normal,induction:L.durian.induction}:{})})}${ILLUSTRATIVE.includes(id)?`<figcaption>${L.fig.illus}</figcaption>`:''}</figure>`;
+}
+function photo(key,cls=''){
+  const L=T[lang], p=PHOTOS[key];
+  return `<figure class="ph ${cls}"><img src="${p.file}" alt="${L.photo[key]}" loading="lazy" decoding="async"><figcaption>${L.photo[key]} · ${L.photo.credit} <a href="${p.page}" target="_blank" rel="noopener">${p.author}</a>, ${p.license}</figcaption></figure>`;
+}
+function media(id){
+  const items=(MEDIA[id]||[]).map(m=>m.split(':'));
+  const figs=items.filter(([t])=>t==='fig').map(([,k])=>figure(k)).join('');
+  const photos=items.filter(([t])=>t==='photo').map(([,k])=>k);
+  const ph=photos.length>1?`<div class="ph-row">${photos.map(k=>photo(k)).join('')}</div>`:photos.map(k=>photo(k)).join('');
+  return figs+ph;
 }
 function block([type,v]){
   if(type==='p') return `<p>${v}</p>`;
