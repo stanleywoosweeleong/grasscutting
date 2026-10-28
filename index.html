@@ -537,6 +537,7 @@ function setSection(d,open){
   d.classList.toggle('open',open);
   d.querySelector('.sec-head').setAttribute('aria-expanded',open);
   d.querySelector('.body').hidden=!open;
+  store.set('openSecs',[...document.querySelectorAll('.sec.open')].map(x=>x.id));
 }
 document.addEventListener('click',e=>{
   const head=e.target.closest('.sec-head'); if(!head) return;
@@ -692,7 +693,8 @@ addEventListener('appinstalled',()=>{$('#installBtn').classList.remove('show');t
 
 // ---------- start ----------
 render(); setSeason(store.get('season','normal')); net(); route();
-if(!store.get('seenLearn',false)){const s1=document.getElementById('s1'); if(s1) setSection(s1,true); store.set('seenLearn',true)}
+// Cards open as they were left; on the very first launch, card 1 is open
+store.get('openSecs',store.get('seenLearn',false)?[]:['s1']).forEach(id=>{const d=document.getElementById(id); if(d) setSection(d,true)});
 if(!store.get('onboarded',false)) startOnboarding();
 
 // Service worker (network-first, so content updates need no version bump)
