@@ -452,7 +452,7 @@ const store={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON
 const LANGS=['zh','en','ms'];
 const SIZES=[90,100,115,130];
 // Bump with every release: settings shows it, and returning users get an "updated" toast
-const APP_VERSION='1.1.0';
+const APP_VERSION='1.1.1';
 const THEME_BAR={light:'#f2eee5',dark:'#121a15'};
 const get=(obj,path)=>path.split('.').reduce((o,k)=>o&&o[k],obj);
 function guessLang(){const n=(navigator.language||'en').toLowerCase();return n.startsWith('zh')?'zh':(n.startsWith('ms')||n.startsWith('id'))?'ms':'en'}
@@ -547,6 +547,12 @@ function setLang(l){lang=l;store.set('lang',l);render()}
 // Older iOS ignores overflow:hidden on the page: dragging the dimmed backdrop must not scroll it
 document.querySelectorAll('.scrim').forEach(sc=>sc.addEventListener('touchmove',e=>{if(!e.target.closest('.sheet'))e.preventDefault()},{passive:false}));
 
+// ---------- dialogs are modal: while one is open, the page behind is inert (no focus, taps or screen reader) ----------
+const DIALOGS=['#setSheet','#shareSheet','#viewer','#onboard'].map(s=>$(s));
+function syncInert(){const open=DIALOGS.some(d=>!d.hidden);['.top','main','.tabs'].forEach(s=>$(s).inert=open)}
+const dialogWatch=new MutationObserver(syncInert);
+DIALOGS.forEach(d=>dialogWatch.observe(d,{attributes:true,attributeFilter:['hidden']}));
+
 // ---------- open and close sections ----------
 function setSection(d,open){
   d.classList.toggle('open',open);
@@ -607,7 +613,7 @@ $('#sizeSeg').addEventListener('click',e=>{const b=e.target.closest('[data-size]
 $('#themeSeg').addEventListener('click',e=>{const b=e.target.closest('[data-theme-opt]');if(b){store.set('theme',b.dataset.themeOpt);syncPrefs()}});
 
 function openSettings(){$('#setSheet').hidden=false;history.pushState({sheet:'settings'},'');$('#setTitle').focus({preventScroll:true})}
-function closeSettings(fromBack){if($('#setSheet').hidden)return;$('#setSheet').hidden=true;if(!fromBack&&history.state&&history.state.sheet==='settings')history.back();$('#setBtn').focus()}
+function closeSettings(fromBack){if($('#setSheet').hidden)return;$('#setSheet').hidden=true;if(!fromBack&&history.state&&history.state.sheet==='settings')history.back();syncInert();$('#setBtn').focus()}
 $('#setBtn').addEventListener('click',openSettings);
 $('#setClose').addEventListener('click',()=>closeSettings());
 $('#setSheet').addEventListener('click',e=>{if(e.target.id==='setSheet')closeSettings()});
@@ -623,7 +629,9 @@ function startOnboarding(){
     <div class="ob-pick"><h2 lang="zh-Hans">选择语言</h2><h2 lang="en">Choose your language</h2><h2 lang="ms">Pilih bahasa</h2></div>
     <div class="langs ob-actions">${LANGS.map(k=>`<button type="button" data-lang="${k}" lang="${T[k].htmlLang}" aria-pressed="${k===lang}">${T[k].native}<span>${T[k].code}</span></button>`).join('')}</div>`;
   $('#obIn').querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>{
-    setLang(b.dataset.lang); store.set('onboarded',true); $('#onboard').hidden=true; location.hash='learn'; route();
+    // keep a shared link's tab (#durian, #sources); otherwise start on Learn
+    setLang(b.dataset.lang); store.set('onboarded',true); $('#onboard').hidden=true;
+    if(!VIEWS.includes(location.hash.slice(1))) location.hash='learn'; route();
   }));
   $('#obIn [aria-pressed="true"]')?.focus();
 }
@@ -648,7 +656,7 @@ async function copy(text,ok){
 $('#copyLinkBtn').addEventListener('click',()=>copy(APP_URL,T[lang].share.copied));
 if(navigator.share){$('#moreBtn').hidden=false;$('#moreBtn').addEventListener('click',()=>navigator.share({title:T[lang].appName,text:shareText}).catch(()=>{}))}
 function openShare(fromSettings){$('#shareSheet').hidden=false;if(fromSettings&&history.state&&history.state.sheet==='settings')history.replaceState({sheet:1},'');else history.pushState({sheet:1},'');const sh=$('#shareSheet .sheet');sh.scrollTop=0;$('#shareTitle').focus({preventScroll:true})}
-function closeShare(fromBack){if($('#shareSheet').hidden)return;$('#shareSheet').hidden=true;if(!fromBack&&history.state&&history.state.sheet)history.back();$('#setBtn').focus()}
+function closeShare(fromBack){if($('#shareSheet').hidden)return;$('#shareSheet').hidden=true;if(!fromBack&&history.state&&history.state.sheet)history.back();syncInert();$('#setBtn').focus()}
 $('#shareClose').addEventListener('click',()=>closeShare());
 $('#shareSheet').addEventListener('click',e=>{if(e.target.id==='shareSheet')closeShare()});
 addEventListener('popstate',()=>closeShare(true));
@@ -671,7 +679,7 @@ function closeViewer(fromBack){
   if($('#viewer').hidden) return;
   $('#viewer').hidden=true; $('#vStage').innerHTML='';
   if(!fromBack&&history.state&&history.state.viewer) history.back();
-  lastFig?.focus({preventScroll:true});
+  syncInert(); lastFig?.focus({preventScroll:true});
 }
 document.addEventListener('click',e=>{
   const f=e.target.closest('[data-zoom]');

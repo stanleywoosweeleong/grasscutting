@@ -47,10 +47,11 @@ self.addEventListener('activate', e => {
 
 const mine = (req, opts) => caches.open(CACHE).then(c => c.match(req, opts));
 
-function save(key, res) {
+// The cache write is handed to waitUntil, so the browser keeps the worker alive until it lands
+function save(e, key, res) {
   if (res.ok || res.type === 'opaque') {
     const copy = res.clone();
-    caches.open(CACHE).then(c => c.put(key, copy));
+    e.waitUntil(caches.open(CACHE).then(c => c.put(key, copy)).catch(() => {}));
   }
   return res;
 }
@@ -62,7 +63,7 @@ self.addEventListener('fetch', e => {
 
   // Google Fonts never change at a given URL: cache first.
   if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') {
-    e.respondWith(mine(req).then(hit => hit || fetch(req).then(res => save(req, res))));
+    e.respondWith(mine(req).then(hit => hit || fetch(req).then(res => save(e, req, res))));
     return;
   }
   if (url.origin !== self.location.origin) return;
@@ -72,7 +73,7 @@ self.addEventListener('fetch', e => {
   const key = req.mode === 'navigate' ? './index.html' : clean.href;
   e.respondWith(
     fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' })
-      .then(res => save(key, res))
+      .then(res => save(e, key, res))
       .catch(() => mine(key, { ignoreSearch: true }).then(hit => hit || mine('./index.html')))
   );
 });
