@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>割草养土</title>
 <meta name="description" content="The science of building orchard soil by cutting grass instead of spraying it, written for durian growers. 中文 · English · Bahasa Melayu.">
-<meta name="theme-color" content="#24432f" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#f2eee5" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#121a15" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://stanleywoosweeleong.github.io/grasscutting/">
@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="割草养土">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -57,6 +57,7 @@
 /* Chinese text: system CJK faces (the Latin web fonts have no Chinese glyphs) */
 :lang(zh) h1,:lang(zh) h2,:lang(zh) h3,:lang(zh) .sec-head .t{font-weight:700}
 :lang(zh) body,:lang(zh) .body{line-height:1.7}
+:lang(zh) .eyebrow{font-size:.95rem;letter-spacing:.04em}
 /* System CJK regular weight reads thin, especially light-on-dark: one step heavier and larger */
 :lang(zh) body{font-size:1.1rem;font-weight:500}
 :lang(zh) .fig .lb,:lang(zh) .sec-head .take{font-weight:500}
@@ -77,12 +78,15 @@ button{font:inherit;color:inherit}
 [tabindex="-1"]:focus{outline:none}
 
 /* Top bar */
-.top{position:fixed;inset:0 0 auto;z-index:20;background:var(--bar);color:var(--bar-ink);
+/* Frosted paper bar: the page shows faintly through it as it scrolls */
+.top{position:fixed;inset:0 0 auto;z-index:20;color:var(--ink);
+  background:color-mix(in srgb,var(--bg) 90%,transparent);-webkit-backdrop-filter:saturate(1.4) blur(20px);backdrop-filter:saturate(1.4) blur(20px);
+  border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent);
   padding-top:env(safe-area-inset-top,0px);
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .top-in{height:var(--topbar);display:flex;align-items:center;gap:10px;max-width:720px;margin:0 auto}
-.top h1{font-size:1.3rem;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.install,.langbtn{border:1px solid color-mix(in srgb,var(--bar-ink) 40%,transparent);background:transparent;color:var(--bar-ink);
+.top h1{font-size:1.3rem;letter-spacing:.01em;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.install,.langbtn{border:1px solid var(--line);background:var(--surface);color:var(--ink);
   border-radius:999px;padding:6px 12px;font-size:.9rem;cursor:pointer;white-space:nowrap}
 .install{display:none}
 .install.show{display:inline-block}
@@ -95,7 +99,7 @@ main{padding-top:calc(var(--topbar) + env(safe-area-inset-top,0px));
   padding-bottom:calc(var(--tabbar) + env(safe-area-inset-bottom,0px) + 24px);
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .view{max-width:720px;margin:0 auto;padding-top:20px;display:flex;flex-direction:column;gap:16px}
-.eyebrow{font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.eyebrow{font-size:.9rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .lede{color:var(--muted);font-size:1.02rem}
 .view > h2{font-size:1.6rem}
 .stack{display:flex;flex-direction:column;gap:16px}
@@ -107,7 +111,7 @@ main{padding-top:calc(var(--topbar) + env(safe-area-inset-top,0px));
   display:grid;grid-template-columns:2rem minmax(0,1fr) 1rem;gap:10px;align-items:start}
 .sec-head .head{display:flex;flex-direction:column;gap:4px;min-width:0}
 .sec-head .t{font-family:var(--f-display);font-size:1.1rem;line-height:1.2;text-wrap:balance}
-.sec-head .take{color:var(--muted);font-size:.93rem;font-weight:400}
+.sec-head .take{color:var(--muted);font-size:1rem;font-weight:400}
 .sec.open .sec-head .take{color:var(--ink)}
 .sec-head .n,.sec-head .chev{line-height:1.5}
 .sec-head .n{font-family:var(--f-display);color:var(--mono)}
@@ -133,7 +137,7 @@ main{padding-top:calc(var(--topbar) + env(safe-area-inset-top,0px));
 .ph-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .ph-row .ph img{aspect-ratio:1/1}
 .fig .lb{font:13.5px var(--f-body);fill:var(--ink)}
-.fig .lb.small{font-size:12px;fill:var(--muted)}
+.fig .lb.small{font-size:13px;fill:var(--muted)}
 .fig .lb.strong{font-weight:700}
 .fig .lb.title{font:700 14.5px var(--f-body)}
 .fig .lb.mono,.fig .lb.cut{fill:var(--mono)} .fig .lb.di{fill:var(--di)}
@@ -275,7 +279,7 @@ main{padding-top:calc(var(--topbar) + env(safe-area-inset-top,0px));
 .backbtn{align-self:flex-start;border:0;background:transparent;color:var(--mono);font-weight:700;cursor:pointer;padding:4px 0;font-size:1rem}
 
 /* Share sheet */
-.iconbtn{border:1px solid color-mix(in srgb,var(--bar-ink) 40%,transparent);background:transparent;color:var(--bar-ink);border-radius:999px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;flex:none}
+.iconbtn{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;flex:none}
 .iconbtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8}
 .sheet.share{max-height:92vh;overflow:auto}
 .qrbox{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
@@ -442,7 +446,7 @@ const store={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON
              set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
 const LANGS=['zh','en','ms'];
 const SIZES=[90,100,115,130];
-const THEME_BAR={light:'#24432f',dark:'#16211a'};
+const THEME_BAR={light:'#f2eee5',dark:'#121a15'};
 const get=(obj,path)=>path.split('.').reduce((o,k)=>o&&o[k],obj);
 function guessLang(){const n=(navigator.language||'en').toLowerCase();return n.startsWith('zh')?'zh':(n.startsWith('ms')||n.startsWith('id'))?'ms':'en'}
 let lang=store.get('lang',null);
