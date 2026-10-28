@@ -2,15 +2,16 @@
 // every label comes from T[lang].fig, so each diagram reads in the chosen language.
 // FIGS[id](labels) returns the SVG markup; MEDIA says which diagrams and photos each section shows.
 
+// The first diagram of each section is its "hero": shown on the card itself, before the section is opened.
 const MEDIA = {
-  s1: ['fig:f1'],
+  s1: ['fig:f1', 'fig:f1b'],
   s2: ['fig:f2'],
-  s3: ['fig:f3', 'photo:pintoi'],
+  s3: ['fig:f3', 'fig:f3b', 'photo:pintoi'],
   s4: ['fig:f4', 'photo:lalang'],
-  s5: ['fig:f5'],
+  s5: ['fig:f5', 'fig:f5b'],
   s6: ['fig:f6'],
   s7: ['fig:f7', 'photo:cowgrassLawn', 'photo:cowgrassClose'],
-  s8: ['fig:f8'],
+  s8: ['fig:f8', 'fig:f8b'],
   s9: ['fig:f9']
 };
 // Diagrams that show an idea rather than measured numbers get a caption saying so.
@@ -172,6 +173,89 @@ const FIGS = {
     <g transform="translate(8 214)"><rect y="-10" width="14" height="12" class="zone-path line"/>${txt(20, 0, L.path, 'lb small')}</g>
     <g transform="translate(8 232)"><rect y="-10" width="14" height="12" class="zone-rest"/>${txt(20, 0, L.rest, 'lb small')}</g>
   `, `${L.ring}; ${L.path}; ${L.rest}`),
+
+  // 1b · leaf veins: grass blade (parallel) vs broad leaf (net)
+  f1b: L => svg(128, `
+    <line x1="170" y1="8" x2="170" y2="120" class="rule"/>
+    ${txt(90, 20, L.grassLeaf, 'lb title mono', 'middle')}${txt(255, 20, L.broadLeaf, 'lb title di', 'middle')}
+    <path d="M18 66 C60 50 120 48 162 58 C120 66 60 76 18 66 Z" class="blade"/>
+    <g class="vein" fill="none"><path d="M24 65 C64 54 120 53 156 58"/><path d="M24 66 C64 60 120 58 156 59"/><path d="M24 67 C64 66 120 62 156 60"/></g>
+    <ellipse cx="255" cy="66" rx="64" ry="32" class="dileaf"/>
+    <g class="vein" fill="none"><path d="M192 66 H318"/>${[212, 236, 260, 284, 304].map((x, i) => `<path d="M${x} 66 L${x + 14} ${42 + i % 2 * 3}"/><path d="M${x} 66 L${x + 14} ${90 - i % 2 * 3}"/>`).join('')}
+      <path d="M218 52 l10 3 M243 50 l9 4 M268 50 l9 4 M292 54 l7 3 M218 80 l10 -3 M243 82 l9 -4 M268 82 l9 -4 M292 78 l7 -3"/></g>
+    ${txt(90, 112, L.par, 'lb', 'middle')}${txt(255, 112, L.net, 'lb', 'middle')}
+  `, `${L.grassLeaf}: ${L.par}. ${L.broadLeaf}: ${L.net}.`),
+
+  // 3b · how a legume gets nitrogen: sugar down, nitrogen from air in nodules, soil nitrate switches them off
+  f3b: L => svg(206, `
+    <defs><marker id="ah3b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ahead"/></marker></defs>
+    <rect x="0" y="96" width="340" height="110" class="soil"/>
+    <path d="M110 96 Q112 60 108 34" class="stem" stroke-width="3" fill="none"/>
+    <g class="dicot"><ellipse cx="92" cy="40" rx="13" ry="7" transform="rotate(-30 92 40)"/><ellipse cx="126" cy="36" rx="13" ry="7" transform="rotate(30 126 36)"/><ellipse cx="108" cy="22" rx="10" ry="6"/></g>
+    <path d="M110 98 Q112 140 108 190" class="root" stroke-width="2.2" fill="none"/>
+    <g class="root" fill="none" stroke-width="1.4"><path d="M110 120 l-22 14"/><path d="M111 140 l22 12"/><path d="M109 162 l-18 12"/></g>
+    <g class="nodule">${[[90, 133], [97, 129], [131, 151], [125, 148], [93, 173]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="4.5"/>`).join('')}</g>
+    <path d="M250 34 C210 52 170 92 138 140" class="arrow-n" fill="none" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ah3b)"/>
+    ${txt(332, 26, L.air, 'lb strong', 'end')}
+    <path d="M80 50 Q70 90 86 126" class="arrow-s" fill="none" stroke-width="2" marker-end="url(#ah3b)"/>
+    ${txt(8, 70, L.sugar, 'lb small')}
+    <path d="M134 154 L150 170" class="axis"/>${txt(152, 180, L.nodule, 'lb on-soil')}
+    ${txt(332, 120, L.soilN, 'lb small on-soil', 'end')}
+  `, `${L.sugar}; ${L.air}; ${L.nodule}. ${L.soilN}`),
+
+  // 5b · the cut-and-regrow root cycle
+  f5b: L => {
+    const cx = 170, cy = 112, r = 66, P = a => [cx + r * Math.cos(a * Math.PI / 180), cy + r * Math.sin(a * Math.PI / 180)];
+    const arc = (a1, a2) => { const [x1, y1] = P(a1), [x2, y2] = P(a2); return `<path d="M${x1} ${y1} A${r} ${r} 0 0 1 ${x2} ${y2}" class="cycle" fill="none" stroke-width="2.4" marker-end="url(#ah5b)"/>`; };
+    const nodes = [[-90, L.cut], [0, L.dieback], [90, L.rot], [180, L.regrow]];
+    return svg(232, `
+      <defs><marker id="ah5b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" class="ahead"/></marker></defs>
+      ${arc(-78, -12)}${arc(12, 78)}${arc(102, 168)}${arc(192, 258)}
+      ${nodes.map(([a], i) => { const [x, y] = P(a); return `<circle cx="${x}" cy="${y}" r="11" class="badge"/><text x="${x}" y="${y + 4}" class="badge-t" text-anchor="middle">${i + 1}</text>`; }).join('')}
+      <circle cx="${cx}" cy="${cy}" r="26" class="soil"/>
+      ${blades(['M162 104 Q160 92 156 86', 'M170 104 Q170 90 172 82', 'M178 104 Q180 94 184 88'])}
+      <g class="root" fill="none" stroke-width="1.2"><path d="M170 106 l-8 18"/><path d="M170 106 v22"/><path d="M170 106 l8 18"/></g>
+      ${txt(cx, 26, L.cut, 'lb strong', 'middle')}
+      ${txt(cx + r + 16, cy - 4, L.dieback, 'lb')}
+      ${txt(cx, cy + r + 26, L.rot, 'lb', 'middle')}
+      ${txt(cx - r - 16, cy - 4, L.regrow, 'lb', 'end')}
+    `, nodes.map(([, s], i) => `${i + 1} ${s.replace('\n', ' ')}`).join(', '));
+  },
+
+  // 8b · cutting through the year: wet (often), dry (less), before induction (short under canopy)
+  f8b: L => {
+    const col = (x0, h, cls, n) => blades(Array.from({ length: n }, (_, i) => { const x = x0 + i * 8; return `M${x} 128 Q${x + 1} ${128 - h / 2} ${x - 2 + (i % 3) * 2} ${128 - h + (i % 3) * 4}`; }), cls, 3);
+    return svg(186, `
+      <rect x="0" y="128" width="340" height="18" class="soil"/>
+      <line x1="113" y1="8" x2="113" y2="146" class="rule"/><line x1="227" y1="8" x2="227" y2="146" class="rule"/>
+      ${txt(56, 20, L.wet, 'lb title', 'middle')}${txt(170, 20, L.dry, 'lb title', 'middle')}${txt(283, 20, L.ind, 'lb title', 'middle')}
+      <g class="drop">${[[30, 36], [56, 30], [82, 38]].map(([x, y]) => `<path d="M${x} ${y} q5 7 0 9 q-5 -2 0 -9z"/>`).join('')}</g>
+      ${col(24, 62, 'leaf', 9)}
+      <line x1="16" y1="96" x2="98" y2="96" class="cutline" stroke-width="1.6" stroke-dasharray="5 4"/>
+      <circle cx="170" cy="44" r="10" class="sun"/>
+      ${col(138, 52, 'pale', 9)}
+      <line x1="130" y1="96" x2="212" y2="96" class="cutline" stroke-width="1.6" stroke-dasharray="5 4"/>
+      <g class="bud">${[[268, 40], [276, 46], [284, 40], [292, 46], [300, 40]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="4"/>`).join('')}</g>
+      <path d="M262 34 Q284 26 306 34" class="trunk-line" fill="none" stroke-width="2"/>
+      ${col(250, 14, 'leaf', 9)}
+      ${txt(56, 162, L.often, 'lb', 'middle')}${txt(170, 162, L.less, 'lb', 'middle')}${txt(283, 162, L.short, 'lb', 'middle')}
+    `, `${L.wet}: ${L.often}. ${L.dry}: ${L.less}. ${L.ind}: ${L.short}.`);
+  },
+
+  // durian · induction timeline, flush to flower buds
+  fd2: L => svg(232, `
+    <line x1="34" y1="30" x2="34" y2="184" class="tl"/>
+    ${[[30, L.flush], [80, L.harden], [130, L.dry], [180, L.buds]].map(([y, s], i) => `
+      <circle cx="34" cy="${y}" r="15" class="tl-dot"/>
+      ${[
+        `<ellipse cx="34" cy="${y}" rx="8" ry="4.5" class="leaf-new" transform="rotate(-30 34 ${y})"/>`,
+        `<ellipse cx="34" cy="${y}" rx="8" ry="4.5" class="leaf-old" transform="rotate(-30 34 ${y})"/>`,
+        `<circle cx="34" cy="${y}" r="6" class="sun"/>`,
+        `<g class="bud"><circle cx="29" cy="${y + 2}" r="3"/><circle cx="34" cy="${y - 3}" r="3"/><circle cx="39" cy="${y + 2}" r="3"/></g>`
+      ][i]}
+      ${txt(60, y + 5, s, 'lb strong')}`).join('')}
+    ${txt(8, 222, L.note, 'lb small')}
+  `, [L.flush, L.harden, L.dry, L.buds].join(' → ')),
 
   // durian · two seasons on the orchard floor
   fd: L => svg(186, `
