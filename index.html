@@ -152,6 +152,9 @@ details.sec > summary .hero .fig svg{background:var(--bg)}
 .fig .cycle{stroke:var(--mono)}
 .fig .bud circle{fill:#cfc78a;stroke:var(--soil-dark);stroke-width:.8} .fig .trunk-line{stroke:var(--soil-dark)}
 .fig .tl{stroke:var(--line);stroke-width:3} .fig .tl-dot{fill:var(--surface);stroke:var(--mono);stroke-width:2}
+.fig .leafx{fill:var(--mono-soft);stroke:var(--mono);stroke-width:1.5}
+.fig .mixup path{stroke:#c0453b;stroke-linecap:round}
+.fig .sheath circle{fill:var(--mono)}
 .fig .leaf-new{fill:#9fd6a8} .fig .leaf-old{fill:color-mix(in srgb,var(--mono) 70%,#000)}
 
 /* Full-screen viewer */
@@ -160,10 +163,12 @@ details.sec > summary .hero .fig svg{background:var(--bg)}
 .viewer .v-bar{display:flex;justify-content:flex-end;padding:8px max(8px,env(safe-area-inset-right,0px)) 0 8px}
 .viewer .v-close{width:44px;height:44px;border-radius:50%;border:0;background:rgb(255 255 255 / .16);color:#fff;font-size:1.6rem;line-height:1;cursor:pointer}
 .viewer .v-stage{flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;padding:8px;-webkit-overflow-scrolling:touch}
-.viewer .v-stage img,.viewer .v-stage svg{max-width:100%;max-height:100%;border-radius:8px;cursor:zoom-in}
-.viewer .v-stage svg{width:100%;height:auto;max-width:900px;background:var(--bg)}
+.viewer .v-stage img{max-width:100%;max-height:100%;border-radius:8px;cursor:zoom-in}
+.viewer .v-fig svg{border-radius:8px}
+.viewer .v-fig{width:100%;max-width:900px;cursor:zoom-in}
+.viewer .v-fig svg{width:100%;height:auto;background:var(--bg)}
 .viewer .v-stage.zoomed{align-items:flex-start;justify-content:flex-start}
-.viewer .v-stage.zoomed img,.viewer .v-stage.zoomed svg{max-width:none;max-height:none;width:250%;cursor:zoom-out}
+.viewer .v-stage.zoomed img,.viewer .v-stage.zoomed .v-fig{max-width:none;max-height:none;width:250%;flex:none;cursor:zoom-out}
 .viewer .v-cap{color:#e8eee9;font-size:.9rem;padding:8px max(16px,env(safe-area-inset-left,0px)) 4px;text-align:center}
 .viewer .v-hint{color:#9fb0a3;font-size:.78rem;padding:0 16px 12px;text-align:center}
 
@@ -321,8 +326,8 @@ details.sec > summary .hero .fig svg{background:var(--bg)}
 
 <div class="toast" id="toast" hidden></div>
 
-<script src="content.js"></script>
-<script src="figures.js"></script>
+<script>/* fresh copies on every visit; the service worker still keeps them for offline use */
+['content.js','figures.js'].forEach(f=>document.write('<script src="'+f+'?v='+Date.now()+'"><\/script>'));</script>
 <script>
 const $=s=>document.querySelector(s);
 const store={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch{return d}},
@@ -376,7 +381,8 @@ function render(){
 }
 function figure(id){
   const L=T[lang];
-  return `<figure class="fig" data-zoom tabindex="0" role="button" aria-label="${L.viewer.open}"><span class="zoomhint" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>${FIGS[id]({...L.fig[id], ...(id==='fd'?{normal:L.durian.normal,induction:L.durian.induction}:{})})}${ILLUSTRATIVE.includes(id)?`<figcaption>${L.fig.illus}</figcaption>`:''}</figure>`;
+  let pic='';try{pic=FIGS[id]({...L.fig[id], ...(id==='fd'?{normal:L.durian.normal,induction:L.durian.induction}:{})})}catch(e){console.warn('figure',id,e);return ''}
+  return `<figure class="fig" data-zoom tabindex="0" role="button" aria-label="${L.viewer.open}"><span class="zoomhint" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 L21 21M10.5 7.5v6M7.5 10.5h6"/></svg></span>${pic}${ILLUSTRATIVE.includes(id)?`<figcaption>${L.fig.illus}</figcaption>`:''}</figure>`;
 }
 function photo(key,cls=''){
   const L=T[lang], p=PHOTOS[key];
@@ -454,7 +460,7 @@ let lastFig=null;
 function openViewer(fig){
   lastFig=fig;
   const img=fig.querySelector('img'), pic=fig.querySelector(':scope > svg');
-  $('#vStage').innerHTML=img?`<img src="${img.getAttribute('src')}" alt="${img.alt}">`:pic.outerHTML;
+  $('#vStage').innerHTML=img?`<img src="${img.getAttribute('src')}" alt="${img.alt}">`:`<div class="fig v-fig">${pic.outerHTML}</div>`;
   $('#vStage').classList.remove('zoomed');
   $('#vCap').textContent=(fig.querySelector('figcaption')||{}).textContent||pic.getAttribute('aria-label')||'';
   $('#viewer').setAttribute('aria-label',$('#vCap').textContent);

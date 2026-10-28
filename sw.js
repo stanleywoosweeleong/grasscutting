@@ -33,6 +33,9 @@ self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
       .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+      // drop copies saved under a ?v= address; files are kept under their plain address
+      .then(() => caches.open(CACHE))
+      .then(c => c.keys().then(reqs => Promise.all(reqs.filter(r => new URL(r.url).search).map(r => c.delete(r)))))
       .then(() => self.clients.claim())
   );
 });
@@ -58,10 +61,11 @@ self.addEventListener('fetch', e => {
   if (url.origin !== self.location.origin) return;
 
   // App files: network first (bypassing the browser's HTTP cache), cache when offline.
-  const key = req.mode === 'navigate' ? './index.html' : req;
+  const clean = new URL(req.url); clean.search = '';
+  const key = req.mode === 'navigate' ? './index.html' : clean.href;
   e.respondWith(
     fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' })
       .then(res => save(key, res))
-      .catch(() => caches.match(key).then(hit => hit || caches.match('./index.html')))
+      .catch(() => caches.match(key, { ignoreSearch: true }).then(hit => hit || caches.match('./index.html')))
   );
 });

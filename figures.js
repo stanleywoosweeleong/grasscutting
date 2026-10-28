@@ -4,7 +4,7 @@
 
 // The first diagram of each section is its "hero": shown on the card itself, before the section is opened.
 const MEDIA = {
-  s1: ['fig:f1', 'fig:f1b'],
+  s1: ['fig:f1', 'fig:f1b', 'fig:f1c'],
   s2: ['fig:f2'],
   s3: ['fig:f3', 'fig:f3b', 'photo:pintoi'],
   s4: ['fig:f4', 'photo:lalang'],
@@ -185,6 +185,26 @@ const FIGS = {
       <path d="M218 52 l10 3 M243 50 l9 4 M268 50 l9 4 M292 54 l7 3 M218 80 l10 -3 M243 82 l9 -4 M268 82 l9 -4 M292 78 l7 -3"/></g>
     ${txt(90, 112, L.par, 'lb', 'middle')}${txt(255, 112, L.net, 'lb', 'middle')}
   `, `${L.grassLeaf}: ${L.par}. ${L.broadLeaf}: ${L.net}.`),
+
+  // 1c · C3 vs C4 in hot sun: C3 mixes up oxygen and loses more water; C4 pumps CO2 inward
+  f1c: L => {
+    const leaf = cx => `<ellipse cx="${cx}" cy="112" rx="62" ry="28" class="leafx"/>`;
+    const drops = (xs) => `<g class="drop">${xs.map(x => `<path d="M${x} 160 q5 7 0 9 q-5 -2 0 -9z"/>`).join('')}</g>`;
+    return svg(214, `
+      <line x1="170" y1="8" x2="170" y2="206" class="rule"/>
+      ${txt(85, 20, 'C3', 'lb title di', 'middle')}${txt(255, 20, 'C4', 'lb title mono', 'middle')}
+      ${txt(85, 36, L.c3sub, 'lb small', 'middle')}${txt(255, 36, L.c4sub, 'lb small', 'middle')}
+      <circle cx="160" cy="70" r="8" class="sun"/><circle cx="330" cy="70" r="8" class="sun"/>
+      ${leaf(85)}${leaf(255)}
+      ${txt(60, 76, 'CO₂', 'lb strong', 'middle')}<path d="M60 80 v18" class="arrow" fill="none"/>
+      ${txt(230, 76, 'CO₂', 'lb strong', 'middle')}<path d="M230 80 v18" class="arrow" fill="none"/>
+      <g class="mixup"><path d="M94 104 l10 10 M104 104 l-10 10" stroke-width="2.4"/></g>${txt(85, 154, L.o2, 'lb small', 'middle')}
+      <g class="sheath">${Array.from({ length: 8 }, (_, i) => { const a = i * Math.PI / 4; return `<circle cx="${262 + Math.cos(a) * 11}" cy="${112 + Math.sin(a) * 11}" r="4.2"/>`; }).join('')}</g>
+      <path d="M232 104 Q244 106 250 110" class="arrow-n" fill="none" stroke-width="2"/>${txt(255, 154, L.pump, 'lb small', 'middle')}
+      ${drops([62, 85, 108])}${drops([255])}
+      ${txt(85, 188, L.c3note, 'lb', 'middle')}${txt(255, 188, L.c4note, 'lb', 'middle')}
+    `, `C3: ${L.c3note.replace('\n', ' ')}. C4: ${L.c4note.replace('\n', ' ')}.`);
+  },
 
   // 3b · how a legume gets nitrogen: sugar down, nitrogen from air in nodules, soil nitrate switches them off
   f3b: L => svg(206, `
