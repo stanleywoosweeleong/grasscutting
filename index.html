@@ -68,6 +68,7 @@ p{margin:0}
 a{color:var(--mono)}
 button{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--mono);outline-offset:2px}
+[tabindex="-1"]:focus{outline:none}
 
 /* Top bar */
 .top{position:fixed;inset:0 0 auto;z-index:20;background:var(--bar);color:var(--bar-ink);
@@ -377,18 +378,14 @@ details.sec > summary .hero .fig svg{background:var(--bg)}
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="setTitle">
     <div id="setMain" class="stack" style="gap:10px">
       <h2 id="setTitle" data-t="settings.title" tabindex="-1"></h2>
-      <button class="set-row plain" id="rowLang" type="button"><span class="set-l" data-t="settings.language"></span><span class="set-v" id="curLang"></span><span class="chev" aria-hidden="true">›</span></button>
+      <div class="set-block"><span class="set-l" id="langLabel">语言 · Language · Bahasa</span>
+        <div class="seg three" role="group" aria-labelledby="langLabel" id="langList"></div></div>
       <div class="set-block"><span class="set-l" id="sizeLabel" data-t="settings.textSize"></span>
         <div class="seg four" role="group" aria-labelledby="sizeLabel" id="sizeSeg"><button type="button" data-size="0"><span style="font-size:0.8rem">A</span></button><button type="button" data-size="1"><span style="font-size:0.95rem">A</span></button><button type="button" data-size="2"><span style="font-size:1.15rem">A</span></button><button type="button" data-size="3"><span style="font-size:1.35rem">A</span></button></div></div>
       <div class="set-block"><span class="set-l" id="themeLabel" data-t="settings.theme"></span>
         <div class="seg three" role="group" aria-labelledby="themeLabel" id="themeSeg"><button type="button" data-theme-opt="system" data-t="settings.themes.system"></button><button type="button" data-theme-opt="light" data-t="settings.themes.light"></button><button type="button" data-theme-opt="dark" data-t="settings.themes.dark"></button></div></div>
       <button class="set-row" id="rowShare" type="button"><span class="set-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="M8.3 10.8l7.4-4.4M8.3 13.2l7.4 4.4"/></svg></span><span class="set-l" data-t="settings.share"></span><span></span><span class="chev" aria-hidden="true">›</span></button>
       <button class="primary" type="button" id="setDone" data-t="langMenu.done"></button>
-    </div>
-    <div id="setLang" class="stack" style="gap:10px" hidden>
-      <button class="backbtn" type="button" id="langBack">‹ <span data-t="settings.back"></span></button>
-      <h2 id="langTitle" data-t="settings.language" tabindex="-1"></h2>
-      <div class="langs" id="langList"></div>
     </div>
   </div>
 </div>
@@ -449,7 +446,6 @@ function render(){
   document.title=L.appName;
   $('#appName').textContent=L.appName;
   $('#setBtn').setAttribute('aria-label',L.settings.open);
-  $('#curLang').textContent=L.native;
   document.querySelectorAll('#sizeSeg [data-size]').forEach(b=>b.setAttribute('aria-label',L.settings.sizes[b.dataset.size]));
   syncPrefs();
   $('#offline').textContent=L.offline;
@@ -495,7 +491,7 @@ function render(){
     return `<li><span lang="en" class="ref-t">${t}${d?` <a href="https://doi.org/${d}" target="_blank" rel="noopener">doi:${d}</a>`:' '+L.sources.noDoi}</span>${R.findings[k]?`<span class="ref-f">${R.findings[k]}</span>`:''}<span class="ref-b">${badges}</span></li>`;
   }).join('');
   $('#refNote').textContent=L.refs.note;
-  $('#langList').innerHTML=LANGS.map(k=>`<button type="button" data-lang="${k}" lang="${T[k].htmlLang}" aria-pressed="${k===lang}">${T[k].native}<span>${T[k].code}</span></button>`).join('');
+  $('#langList').innerHTML=LANGS.map(k=>`<button type="button" data-lang="${k}" lang="${T[k].htmlLang}" aria-pressed="${k===lang}">${T[k].native}</button>`).join('');
 }
 function figure(id){
   const L=T[lang];
@@ -563,19 +559,15 @@ function syncPrefs(){
 $('#sizeSeg').addEventListener('click',e=>{const b=e.target.closest('[data-size]');if(b){store.set('textSize',+b.dataset.size);syncPrefs()}});
 $('#themeSeg').addEventListener('click',e=>{const b=e.target.closest('[data-theme-opt]');if(b){store.set('theme',b.dataset.themeOpt);syncPrefs()}});
 
-function showPane(p){$('#setMain').hidden=p!=='main';$('#setLang').hidden=p!=='lang';
-  if(p==='lang')($('#langList [aria-pressed="true"]')||$('#langTitle')).focus();else $('#setTitle').focus({preventScroll:true})}
-function openSettings(){$('#setSheet').hidden=false;history.pushState({sheet:'settings'},'');showPane('main')}
+function openSettings(){$('#setSheet').hidden=false;history.pushState({sheet:'settings'},'');$('#setTitle').focus({preventScroll:true})}
 function closeSettings(fromBack){if($('#setSheet').hidden)return;$('#setSheet').hidden=true;if(!fromBack&&history.state&&history.state.sheet==='settings')history.back();$('#setBtn').focus()}
 $('#setBtn').addEventListener('click',openSettings);
 $('#setDone').addEventListener('click',()=>closeSettings());
 $('#setSheet').addEventListener('click',e=>{if(e.target.id==='setSheet')closeSettings()});
-$('#rowLang').addEventListener('click',()=>showPane('lang'));
-$('#langBack').addEventListener('click',()=>showPane('main'));
-$('#langList').addEventListener('click',e=>{const b=e.target.closest('[data-lang]');if(b){setLang(b.dataset.lang);showPane('main')}});
+$('#langList').addEventListener('click',e=>{const b=e.target.closest('[data-lang]');if(b){setLang(b.dataset.lang);$(`#langList [data-lang="${b.dataset.lang}"]`).focus()}});
 $('#rowShare').addEventListener('click',()=>{$('#setSheet').hidden=true;openShare(true)});
 addEventListener('popstate',()=>closeSettings(true));
-addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#setSheet').hidden){if(!$('#setLang').hidden)showPane('main');else closeSettings()}});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#setSheet').hidden)closeSettings()});
 
 // ---------- first run: one tap to pick a language, then straight to the content ----------
 function startOnboarding(){
