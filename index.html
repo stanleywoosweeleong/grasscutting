@@ -608,8 +608,9 @@ function startOnboarding(){
   $('#obIn [aria-pressed="true"]')?.focus();
 }
 
-// ---------- tip on Learn (until closed) ----------
-$('#tip').hidden=store.get('tipClosed',false);
+// ---------- tip on Learn (until closed; never inside the installed app) ----------
+const inApp=['standalone','minimal-ui','fullscreen','window-controls-overlay'].some(m=>matchMedia(`(display-mode: ${m})`).matches)||navigator.standalone;
+$('#tip').hidden=inApp||store.get('tipClosed',false);
 $('#tipClose').addEventListener('click',()=>{store.set('tipClosed',true);$('#tip').hidden=true});
 
 // ---------- share sheet: QR, WhatsApp preview, copy ----------
