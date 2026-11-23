@@ -2,7 +2,7 @@
   "name": "割草养土 Grass Cutting",
   "short_name": "割草养土",
   "description": "The science of building orchard soil by cutting grass instead of spraying it, written for durian growers.",
-  "id": "./",
+  "id": "/grasscutting/",
   "start_url": "./#learn",
   "scope": "./",
   "display": "standalone",

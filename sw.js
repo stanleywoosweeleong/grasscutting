@@ -4,7 +4,7 @@
 // Change CACHE only if you rename or remove files and want the old copies cleared.
 // Other apps live on the same address (stanleywoosweeleong.github.io) and share Cache Storage,
 // so this worker only ever touches caches whose names start with 'grasscutting'.
-const CACHE = 'grasscutting-v1';
+const CACHE = 'grasscutting-v2';
 const MINE = k => k.startsWith('grasscutting') || k === 'cut-leave';  // 'cut-leave' = this app's old cache name
 const SHELL = [
   './',
